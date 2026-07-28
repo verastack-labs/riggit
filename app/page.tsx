@@ -1,5 +1,11 @@
 import Link from "next/link";
 import { ContributionGraph } from "@/components/contribution-graph";
+import {
+  ClosingSection,
+  FaqSection,
+  PricingTeaser,
+  ProblemSection,
+} from "@/components/home-sections";
 import { brand } from "@/lib/brand";
 
 /**
@@ -76,6 +82,11 @@ export default function Home() {
           </figcaption>
         </figure>
       </section>
+
+      <ProblemSection />
+      <PricingTeaser />
+      <FaqSection />
+      <ClosingSection />
     </main>
   );
 }
