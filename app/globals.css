@@ -39,6 +39,11 @@
   --radius-modal: 14px;
   --radius-pill: 20px;
 
+  /* Type. Geist is self-hosted via its package, so these resolve to local
+   * files with no network fetch and no layout shift. */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
   /* Motion */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-fast: 150ms;
@@ -55,6 +60,7 @@
   body {
     background-color: var(--color-page);
     color: var(--color-ink);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
 
@@ -93,5 +99,98 @@
      * complete either way, since that is the argument. */
     animation-duration: 1ms;
     animation-delay: 0ms !important;
+  }
+}
+
+/* Brand mark, shared with the app so site and product move identically.
+ * The hand rewinds anticlockwise and cells light as it passes. */
+
+@keyframes riggit-mark-sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes riggit-mark-cell {
+  0% { opacity: 0; }
+  4% { opacity: 1; }
+  50% { opacity: 0.18; }
+  100% { opacity: 0; }
+}
+
+.riggit-mark-hand {
+  animation: riggit-mark-sweep 2.8s linear infinite;
+}
+
+.riggit-mark-cell {
+  opacity: 0;
+  animation: riggit-mark-cell 2.8s ease-in-out infinite;
+}
+
+/* The nav mark sweeps once on hover: a small sign the thing is alive,
+ * without a permanently spinning logo in the corner. */
+.riggit-mark-hover g {
+  transform-origin: 256px 256px;
+  transform-box: view-box;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.group:hover .riggit-mark-hover g {
+  transform: rotate(-360deg);
+}
+
+/* Linear loader: blocks lighting right to left, delays set per block. */
+@keyframes riggit-linear-block {
+  0%, 100% { background-color: var(--color-accent-dim); }
+  18% { background-color: var(--color-accent); }
+}
+
+.riggit-linear-block {
+  animation: riggit-linear-block 1.4s ease-in-out infinite;
+}
+
+/* Page transitions. `template.tsx` remounts per navigation, so this runs on
+ * arrival at every route without any presence bookkeeping. */
+@keyframes riggit-page-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.riggit-page-in {
+  animation: riggit-page-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Scroll reveal. Sections start visible and settle, rather than being hidden
+ * until observed: content must never depend on JavaScript to exist. */
+.riggit-reveal {
+  opacity: 1;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .riggit-reveal {
+      animation: riggit-page-in linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 28%;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .riggit-mark-hand,
+  .riggit-linear-block,
+  .riggit-page-in,
+  .riggit-reveal {
+    animation: none;
+  }
+
+  .riggit-mark-cell {
+    animation: none;
+    opacity: 0.55;
+  }
+
+  .riggit-mark-hover g,
+  .group:hover .riggit-mark-hover g {
+    transition: none;
+    transform: none;
   }
 }
