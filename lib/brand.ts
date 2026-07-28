@@ -9,6 +9,13 @@ export const brand = {
   id: "riggit",
   productName: "Riggit",
   tagline: "Own your GitHub timeline.",
+  /**
+   * The one word of the tagline drawn as lit rather than flat. Named here
+   * rather than split out in the component, so a second brand whose tagline
+   * has no such word simply omits this and the heading renders plain, instead
+   * of a component reaching into a string it should not know the shape of.
+   */
+  taglineAccent: "GitHub",
   /** Not live until Phase 10 cuts a release. */
   downloadUrl: "https://github.com/verastack-labs/riggit/releases/latest",
   /**
