@@ -12,9 +12,27 @@ const FILL = [
   "var(--color-accent)",
 ];
 
-/** Each beat owns a fifth of the timeline, and every element's window is
- * derived from its index rather than hand-written per layer. */
-const STEP = 100 / (BEATS.length + 1);
+/**
+ * Beat i holds the centre at `i * STEP`, so clean states land evenly, the
+ * first at the very start of the pinned range and the last at its very end.
+ *
+ * Each window spans two steps either side, not one. That width is what puts
+ * three items on screen at once: when i is centred, i-1 has reached its
+ * dimmed slot above and i+1 its dimmed slot below. A narrower window has them
+ * at their extremes, invisible, exactly when they should be flanking.
+ *
+ * The outer windows deliberately fall outside 0 to 100, which is what makes
+ * the first beat already centred on arrival and the last still centred on
+ * exit rather than the stage being blank at both ends.
+ */
+const STEP = 100 / (BEATS.length - 1);
+
+function windowFor(index: number) {
+  return {
+    ["--from" as string]: `${((index - 2) * STEP).toFixed(3)}%`,
+    ["--to" as string]: `${((index + 2) * STEP).toFixed(3)}%`,
+  };
+}
 
 /**
  * The demo: copy steps through fixed positions on one side while the
@@ -54,10 +72,7 @@ export function DemoSection() {
               <li
                 key={beat.key}
                 className="riggit-demo-beat absolute inset-x-0 top-1/2"
-                style={{
-                  ["--from" as string]: `${index * STEP}%`,
-                  ["--to" as string]: `${index * STEP + STEP * 2}%`,
-                }}
+                style={windowFor(index)}
               >
                 <span className="font-mono text-[11.5px] text-ink-muted">
                   {String(index + 1).padStart(2, "0")}
@@ -84,10 +99,7 @@ export function DemoSection() {
                   <g
                     key={beat.key}
                     className="riggit-demo-layer"
-                    style={{
-                      ["--from" as string]: `${index * STEP}%`,
-                      ["--to" as string]: `${index * STEP + STEP * 2}%`,
-                    }}
+                    style={windowFor(index)}
                   >
                     {beat.cells.map((level, i) => (
                       <rect
