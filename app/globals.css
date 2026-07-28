@@ -491,11 +491,54 @@
 }
 
 /* The full-bleed field. A tiled background rather than a fixed cell count, so
- * it covers any viewport and is always cut off by the edges. */
+ * it covers any viewport and is always cut off by the edges.
+ *
+ * Two things make the lattice line up with the lit shape drawn over it, and
+ * both are easy to get wrong in ways that look like a rounding error.
+ *
+ * The cell is centred inside its tile. A 26px cell at the tile's origin has
+ * its centre 4px off the tile's centre, and `background-position: center`
+ * aligns tile centres, so every resting cell sat 4px up and left of the lit
+ * cell it was supposed to be under.
+ *
+ * And the element is centred on the shape rather than on the stage. The shape
+ * is not in the middle of the stage: it shares a centred column with the copy
+ * and sits above it, so anchoring the field to the stage left a vertical
+ * offset that happened to be about two thirds of a cell. Anchoring it here
+ * instead means the two grids share an origin by construction, and stay
+ * aligned through any change to the copy's height or the gap between them. */
 .riggit-canvas-field {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34'%3E%3Crect width='26' height='26' rx='7' fill='%23141a16'/%3E%3C/svg%3E");
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* Half of this has to exceed the largest stage dimension, or the field runs
+   * out before the stage edge does once the shape sits away from centre. */
+  width: 200vmax;
+  height: 200vmax;
+  transform: translate(-50%, -50%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34'%3E%3Crect x='4' y='4' width='26' height='26' rx='7' fill='%23141a16'/%3E%3C/svg%3E");
   background-position: center;
   background-repeat: repeat;
+}
+
+/* The header once content is behind it.
+ *
+ * Same bargain as the mobile sheet: less opacity, more blur. A bar separates
+ * itself from the page better by defocusing what runs under it than by hiding
+ * it, and at 80% it was hiding it, which read as a solid strip rather than as
+ * glass. Opaque by default and see-through only where the blur exists, or the
+ * lower alpha stops being frosted and becomes a bar with legible text showing
+ * straight through it. */
+.riggit-header-veil {
+  background-color: color-mix(in srgb, var(--color-page) 94%, transparent);
+}
+
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .riggit-header-veil {
+    background-color: color-mix(in srgb, var(--color-page) 52%, transparent);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+  }
 }
 
 .riggit-canvas-vignette {

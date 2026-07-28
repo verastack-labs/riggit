@@ -148,7 +148,7 @@ export function SiteHeader() {
         // Border and backdrop appear only once content is behind the header.
         // At rest it is part of the page, not a bar sitting on top.
         scrolled || menuMounted
-          ? "border-b border-edge bg-page/80 backdrop-blur-md"
+          ? "riggit-header-veil border-b border-edge"
           : "border-b border-transparent",
         // The seam below replaces it while the sheet is open, so a flat rule
         // and a gradient are never stacked on the same pixel row.
