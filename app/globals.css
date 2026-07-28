@@ -32,6 +32,13 @@
   --color-accent-bright: #3fd992;
   --color-accent-track: #1e5c41;
 
+  /* An unfilled contribution cell. Site-only, and deliberately a step above
+   * --color-panel rather than equal to it: the graph now empties as well as
+   * fills, and cells that match their own background do not read as empty,
+   * they read as missing. The grid has to survive the drained state for the
+   * refill to look like cells lighting rather than squares materialising. */
+  --color-empty-cell: #171a15;
+
   /* Radii */
   --radius-control: 8px;
   --radius-field: 10px;
@@ -82,94 +89,110 @@
   }
 }
 
-/* The hero graph filling its own gaps.
+/* The hero graph filling its own gaps, on a loop.
  *
  * Only the empty squares animate. Cells that were already green stay put, so
- * what the eye follows is precisely the thing the product does. Delays are set
- * inline per cell so the fill sweeps left to right, reading as time passing
- * rather than as a random sparkle. */
-
-@keyframes riggit-gap-fill {
-  from {
-    fill: var(--color-panel);
-  }
-  to {
-    fill: var(--color-accent);
-  }
-}
-
-/* Once a cell has filled it keeps a slow pulse, so the hero is still alive
- * three seconds in rather than frozen on a finished picture.
+ * what the eye follows is precisely the thing the product does, and the static
+ * cells give the moving ones something to be measured against.
  *
- * Only the recovered cells breathe. The ones that were always green stay put,
- * which keeps the same distinction the fill draws: the living part of the
- * graph is exactly the part the product is responsible for.
+ * The loop holds at both ends rather than running continuously. A cycle that
+ * never rests reads as a progress bar; one that fills, sits on the result,
+ * empties and sits on the problem reads as an argument being made twice a
+ * minute. The full state is held roughly three times as long as the empty one,
+ * since the filled graph is the point and the empty one is only the reminder
+ * of why.
  *
- * On opacity rather than fill, so it cannot fight the fill keyframes over the
- * same property. No phase offset is needed either: each cell's pulse begins
- * when its own fill ends, so the sweep's left-to-right stagger is inherited as
- * a travelling shimmer instead of every cell flashing in unison. */
-@keyframes riggit-gap-breathe {
+ * `alternate` is what buys the emptying for free: the second iteration plays
+ * the same keyframes backwards, so there is one timeline to keep balanced
+ * instead of two that have to be kept from drifting apart. */
+@keyframes riggit-gap-cycle {
   0%,
-  100% {
-    opacity: 1;
+  22% {
+    fill: var(--color-empty-cell);
   }
-  50% {
-    opacity: 0.72;
+  34%,
+  100% {
+    fill: var(--color-accent);
   }
 }
 
 .riggit-gap {
   /* Defaulted, because an unresolvable `var()` invalidates the whole
    * declaration at computed-value time: a cell missing its delay would lose
-   * both animations and stay sitting there as a visible hole. */
-  animation:
-    riggit-gap-fill 620ms var(--ease-standard) var(--gap-delay, 0ms) both,
-    riggit-gap-breathe 4200ms ease-in-out calc(var(--gap-delay, 0ms) + 620ms)
-      infinite;
+   * the animation and sit there as a permanent hole. */
+  animation: riggit-gap-cycle 6s var(--ease-standard) var(--gap-delay, 0ms)
+    infinite alternate;
 }
 
 /* Atmosphere behind the hero, the one place on the page with any. It is what
  * separates the opening from the sections below, which are deliberately flat.
  *
- * Very low alpha on purpose: on a near-black ground an accent wash reads as
- * depth at around a tenth opacity and as a coloured smear well before a
- * quarter. It breathes far slower than anything else on the page, at a rate
- * closer to a room's light changing than to an animation, so the hero feels
- * lit rather than animated. */
-@keyframes riggit-hero-glow {
+ * Two layers, because one is a blob and two are weather. The near layer is
+ * pinned to the graph's own rhythm, brightening as the gaps fill and dropping
+ * back as they empty, so the light is a consequence of the argument rather
+ * than decoration running beside it. The far layer drifts on its own longer,
+ * deliberately unrelated period, which is what stops the pair from visibly
+ * repeating: 12 against 23 seconds does not come back into phase for nearly
+ * five minutes. */
+@keyframes riggit-hero-lift {
   0%,
   100% {
-    opacity: 0.7;
-    transform: scale(1);
+    opacity: 0.42;
   }
   50% {
     opacity: 1;
-    transform: scale(1.05);
   }
 }
 
-.riggit-hero-glow {
+@keyframes riggit-hero-drift {
+  0%,
+  100% {
+    transform: translate3d(-5%, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(5%, 3%, 0) scale(1.1);
+  }
+}
+
+.riggit-hero-lift {
   background: radial-gradient(
-    58% 46% at 50% 14%,
-    rgb(53 208 140 / 11%),
+    56% 44% at 50% 12%,
+    rgb(53 208 140 / 16%),
     rgb(53 208 140 / 0%) 68%
   );
-  animation: riggit-hero-glow 15s ease-in-out infinite;
+  /* 12s is the graph's full cycle: 6s of keyframes played forwards and then
+   * backwards. The delay matches the graph's own head start, set in
+   * contribution-graph.tsx, so the light peaks in the middle of the filled
+   * state rather than leading the thing it is supposed to be responding to.
+   * The two numbers have to move together. */
+  animation: riggit-hero-lift 12s ease-in-out 500ms infinite;
+}
+
+.riggit-hero-drift {
+  background: radial-gradient(
+    42% 38% at 28% 46%,
+    rgb(53 208 140 / 11%),
+    rgb(53 208 140 / 0%) 70%
+  );
+  animation: riggit-hero-drift 23s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .riggit-gap {
-    /* Still ends filled, just without the sweep or the pulse. The graph has to
-     * read as complete either way, since that is the argument. */
-    animation: riggit-gap-fill 1ms var(--ease-standard) both;
+    /* Parked on the filled state rather than looping. The graph has to read as
+     * complete either way, since that is the argument; the loop only exists to
+     * show how it got there. Overrides the SVG `fill` attribute, which is why
+     * the cells do not need re-rendering for this case. */
+    animation: none;
+    fill: var(--color-accent);
   }
 
-  .riggit-hero-glow {
-    /* The wash stays, since it is depth rather than motion. Only the breathing
-     * stops, held at the midpoint so it does not sit at its dimmest. */
+  .riggit-hero-lift,
+  .riggit-hero-drift {
+    /* The light stays, since it is depth rather than motion. Only its movement
+     * stops, and the near layer is held up rather than at its dimmest. */
     animation: none;
-    opacity: 0.85;
+    opacity: 0.9;
   }
 }
 
