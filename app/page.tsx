@@ -43,7 +43,10 @@ export default function Home() {
           className="riggit-hero-drift pointer-events-none absolute inset-x-0 top-0 -z-10 h-[680px] sm:h-[880px]"
         />
 
-        <section className="mx-auto max-w-[1080px] px-6 pt-24 pb-16 sm:pt-36">
+        {/* Tighter at the top than the rhythm below it. The header is already
+            64px of empty space, so the section's own padding is the second
+            gap the eye crosses, not the first. */}
+        <section className="mx-auto max-w-[1080px] px-6 pt-14 pb-16 sm:pt-20">
           <div className="flex flex-col items-center text-center">
             <span className="mb-7 text-[10.5px] font-semibold tracking-[0.11em] text-ink-muted uppercase">
               For developers who did the work
