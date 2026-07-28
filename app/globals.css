@@ -235,3 +235,104 @@
     transform: none;
   }
 }
+
+/* The scrolling demo.
+ *
+ * A named scroll timeline on the section, referenced by descendants. Each of
+ * the four grid layers is opaque for one quarter of the scroll and crossfades
+ * with its neighbours, so the grid appears to rearrange rather than to swap.
+ *
+ * `--layer` is set inline per layer and shifts that window along, which keeps
+ * one rule serving all four instead of four near-identical rules.
+ *
+ * Everything here is inside @supports. Without scroll timelines the last beat
+ * shows and the copy reads as an ordinary column: the section still makes its
+ * point, it just stops performing it. */
+
+.riggit-demo-layer {
+  opacity: 0;
+}
+
+/* The final beat is the resting state, so a browser with no scroll timelines
+ * still lands on "the graph tells the truth" rather than on a blank panel. */
+.riggit-demo-layer:last-child {
+  opacity: 1;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .riggit-demo {
+      view-timeline-name: --demo;
+      view-timeline-axis: block;
+      timeline-scope: --demo;
+    }
+
+    @keyframes riggit-demo-layer {
+      0%,
+      6% {
+        opacity: 0;
+      }
+      12%,
+      19% {
+        opacity: 1;
+      }
+      25% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .riggit-demo-layer {
+      animation: riggit-demo-layer linear both;
+      animation-timeline: --demo;
+      animation-range: cover 0% cover 100%;
+      /* Each layer owns a quarter of the timeline. Negative delay on a
+       * scroll timeline shifts the window rather than waiting. */
+      animation-delay: calc(var(--layer) * -25%);
+    }
+
+    /* The last layer has nothing following it, so it holds instead of fading
+     * back out and leaving an empty panel at the end of the section. */
+    .riggit-demo-layer:last-child {
+      animation-name: riggit-demo-layer-final;
+    }
+
+    @keyframes riggit-demo-layer-final {
+      0%,
+      6% {
+        opacity: 0;
+      }
+      12%,
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* Copy dims as it leaves the middle of the viewport, so attention sits
+     * where the grid is currently pointing. Opacity and a small lift rather
+     * than blur: animated blur is the first thing to drop frames. */
+    @keyframes riggit-demo-beat {
+      0% {
+        opacity: 0.15;
+        transform: translateY(12px);
+      }
+      35%,
+      65% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0.15;
+        transform: translateY(-12px);
+      }
+    }
+
+    .riggit-demo-beat {
+      animation: riggit-demo-beat linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
