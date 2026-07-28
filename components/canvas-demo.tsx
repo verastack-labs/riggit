@@ -30,15 +30,22 @@ export function CanvasDemo() {
     <section className="riggit-canvas relative">
       <div ref={trackRef} className="riggit-canvas-track">
         <div className="riggit-canvas-stage">
+          {/* Field only. The lit shape moved out of here and into the flow
+              below, so nothing bright sits behind the words. */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 overflow-hidden"
           >
             {/* Tiles infinitely: no viewport is too wide for it. */}
             <div className="riggit-canvas-field absolute inset-0" />
+            {/* Removes the hard edge so the field has no visible boundary. */}
+            <div className="riggit-canvas-vignette absolute inset-0" />
+          </div>
 
+          <div className="relative mx-auto flex h-full max-w-[1080px] flex-col items-center justify-center gap-10 px-6">
             <svg
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              aria-hidden="true"
+              className="riggit-canvas-shape shrink-0"
               width={size}
               height={size}
             >
@@ -66,17 +73,12 @@ export function CanvasDemo() {
               ))}
             </svg>
 
-            {/* Removes the hard edge so the field has no visible boundary. */}
-            <div className="riggit-canvas-vignette absolute inset-0" />
-          </div>
-
-          <div className="relative mx-auto flex h-full max-w-[1080px] items-center px-6">
-            <ol className="relative w-full">
+            <ol className="relative h-[13rem] w-full shrink-0">
               {BEATS.map((beat, index) => (
                 <li
                   key={beat.key}
                   data-active={index === step}
-                  className="riggit-canvas-beat absolute inset-x-0 top-1/2 text-center"
+                  className="riggit-canvas-beat absolute inset-x-0 top-0 text-center"
                 >
                   <h3 className="mx-auto max-w-[20ch] text-[clamp(1.9rem,5vw,3.2rem)] leading-[1.04] font-medium tracking-[-0.035em] text-balance text-ink">
                     {beat.title}
