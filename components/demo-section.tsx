@@ -59,7 +59,9 @@ export function DemoSection() {
                 <h3 className="mt-3 max-w-[18ch] text-[clamp(1.5rem,3.2vw,2.15rem)] leading-[1.08] font-medium tracking-[-0.03em] text-balance text-ink">
                   {beat.title}
                 </h3>
-                <p className="mt-3 max-w-[44ch] text-[15px] leading-[1.6] text-ink-secondary text-pretty">
+                {/* Same copy as the full-bleed variation, so the same
+                    treatment. See the note there. */}
+                <p className="mt-3 max-w-[44ch] text-[15px] leading-[1.6] text-ink-secondary text-balance">
                   {beat.body}
                 </p>
               </li>
