@@ -98,16 +98,78 @@
   }
 }
 
+/* Once a cell has filled it keeps a slow pulse, so the hero is still alive
+ * three seconds in rather than frozen on a finished picture.
+ *
+ * Only the recovered cells breathe. The ones that were always green stay put,
+ * which keeps the same distinction the fill draws: the living part of the
+ * graph is exactly the part the product is responsible for.
+ *
+ * On opacity rather than fill, so it cannot fight the fill keyframes over the
+ * same property. No phase offset is needed either: each cell's pulse begins
+ * when its own fill ends, so the sweep's left-to-right stagger is inherited as
+ * a travelling shimmer instead of every cell flashing in unison. */
+@keyframes riggit-gap-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.72;
+  }
+}
+
 .riggit-gap {
-  animation: riggit-gap-fill 620ms var(--ease-standard) both;
+  /* Defaulted, because an unresolvable `var()` invalidates the whole
+   * declaration at computed-value time: a cell missing its delay would lose
+   * both animations and stay sitting there as a visible hole. */
+  animation:
+    riggit-gap-fill 620ms var(--ease-standard) var(--gap-delay, 0ms) both,
+    riggit-gap-breathe 4200ms ease-in-out calc(var(--gap-delay, 0ms) + 620ms)
+      infinite;
+}
+
+/* Atmosphere behind the hero, the one place on the page with any. It is what
+ * separates the opening from the sections below, which are deliberately flat.
+ *
+ * Very low alpha on purpose: on a near-black ground an accent wash reads as
+ * depth at around a tenth opacity and as a coloured smear well before a
+ * quarter. It breathes far slower than anything else on the page, at a rate
+ * closer to a room's light changing than to an animation, so the hero feels
+ * lit rather than animated. */
+@keyframes riggit-hero-glow {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+.riggit-hero-glow {
+  background: radial-gradient(
+    58% 46% at 50% 14%,
+    rgb(53 208 140 / 11%),
+    rgb(53 208 140 / 0%) 68%
+  );
+  animation: riggit-hero-glow 15s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .riggit-gap {
-    /* Still ends filled, just without the sweep. The graph has to read as
-     * complete either way, since that is the argument. */
-    animation-duration: 1ms;
-    animation-delay: 0ms !important;
+    /* Still ends filled, just without the sweep or the pulse. The graph has to
+     * read as complete either way, since that is the argument. */
+    animation: riggit-gap-fill 1ms var(--ease-standard) both;
+  }
+
+  .riggit-hero-glow {
+    /* The wash stays, since it is depth rather than motion. Only the breathing
+     * stops, held at the midpoint so it does not sit at its dimmest. */
+    animation: none;
+    opacity: 0.85;
   }
 }
 
