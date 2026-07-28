@@ -521,6 +521,76 @@
   background-repeat: repeat;
 }
 
+/* The early access card's border, and the only one on the site.
+ *
+ * That exclusivity is the whole mechanism. It marks the tier that expires, and
+ * a treatment applied to every card would mark nothing.
+ *
+ * Drawn as a gradient behind a 1px inset rather than as a `border`, because a
+ * border takes one colour. The same gradient is repeated blurred underneath to
+ * throw light onto the page, which is what separates this from a card that
+ * merely has a coloured edge.
+ *
+ * The bleed is bounded on purpose: 1px of inset and 16px of blur, inside a
+ * container with 24px of padding. A full-bleed glow that overruns its column
+ * is how the hero raised a horizontal scrollbar that came and went on its own
+ * animation cycle. */
+@property --riggit-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes riggit-border-turn {
+  to {
+    --riggit-angle: 360deg;
+  }
+}
+
+.riggit-glow-border {
+  position: relative;
+  padding: 1px;
+  border-radius: var(--radius-card);
+  /* Static, and correct on its own. Browsers without `@property` cannot
+   * interpolate a registered angle, so the rule below only adds movement to
+   * something already finished rather than being the thing that makes it
+   * work. */
+  background: conic-gradient(
+    from var(--riggit-angle),
+    var(--color-accent) 0deg,
+    var(--color-accent-track) 95deg,
+    var(--color-edge-strong) 180deg,
+    var(--color-accent-track) 265deg,
+    var(--color-accent) 360deg
+  );
+}
+
+.riggit-glow-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: inherit;
+  filter: blur(16px);
+  opacity: 0.4;
+}
+
+.riggit-glow-border > * {
+  border-radius: calc(var(--radius-card) - 1px);
+  background: var(--color-panel);
+}
+
+@supports (background: conic-gradient(from 0deg, red, blue)) {
+  @media (prefers-reduced-motion: no-preference) {
+    .riggit-glow-border {
+      /* Slow enough to be noticed only on a second look. A border that reads
+       * as spinning is a loading indicator, and this card is not loading. */
+      animation: riggit-border-turn 14s linear infinite;
+    }
+  }
+}
+
 /* The header once content is behind it.
  *
  * Same bargain as the mobile sheet: less opacity, more blur. A bar separates
