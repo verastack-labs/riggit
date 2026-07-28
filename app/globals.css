@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+/**
+ * Design tokens, copied from riggit-app's globals.css.
+ *
+ * Copied rather than imported: the two live in separate repositories, so
+ * there is no build-time path between them. They must be kept in sync by
+ * hand. If they drift, the app and the site stop looking like the same
+ * product, which is the one thing a landing page cannot afford.
+ */
+@theme {
+  /* Surfaces, three steps of near-black, never pure #000 */
+  --color-page: #0a0b0a;
+  --color-sidebar: #0e100e;
+  --color-panel: #12140f;
+  --color-input: #171a18;
+  --color-raised: #151815;
+
+  /* Borders */
+  --color-edge: #23261f;
+  --color-edge-strong: #33382f;
+
+  /* Text */
+  --color-ink: #eef0ec;
+  --color-ink-secondary: #a6aca3;
+  --color-ink-muted: #5f665f;
+
+  /* Accent, the only saturated colour in the system */
+  --color-accent: #35d08c;
+  --color-accent-ink: #06170f;
+  --color-accent-dim: #173324;
+  --color-accent-bright: #3fd992;
+  --color-accent-track: #1e5c41;
+
+  /* Radii */
+  --radius-control: 8px;
+  --radius-field: 10px;
+  --radius-card: 12px;
+  --radius-modal: 14px;
+  --radius-pill: 20px;
+
+  /* Motion */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 250ms;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-page);
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-page);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Tailwind v4's preflight drops v3's pointer cursor on buttons. The app hit
+   * the same thing; keeping the two consistent matters more than the default. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary {
+    cursor: pointer;
+  }
+}
+
+/* The hero graph filling its own gaps.
+ *
+ * Only the empty squares animate. Cells that were already green stay put, so
+ * what the eye follows is precisely the thing the product does. Delays are set
+ * inline per cell so the fill sweeps left to right, reading as time passing
+ * rather than as a random sparkle. */
+
+@keyframes riggit-gap-fill {
+  from {
+    fill: var(--color-panel);
+  }
+  to {
+    fill: var(--color-accent);
+  }
+}
+
+.riggit-gap {
+  animation: riggit-gap-fill 620ms var(--ease-standard) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .riggit-gap {
+    /* Still ends filled, just without the sweep. The graph has to read as
+     * complete either way, since that is the argument. */
+    animation-duration: 1ms;
+    animation-delay: 0ms !important;
+  }
+}

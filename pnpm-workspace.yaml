@@ -1,0 +1,12 @@
+# pnpm blocks postinstall scripts by default. These two ship platform-specific
+# binaries that way and arrive transitively:
+#
+#   sharp          Next's image pipeline. Images are unoptimized here, since a
+#                  static export has no server to optimise them, but Next still
+#                  resolves the package.
+#   unrs-resolver  eslint-config-next's module resolver.
+#
+# Same approach as riggit-app, which allows esbuild for the same reason.
+allowBuilds:
+  sharp: true
+  unrs-resolver: true
