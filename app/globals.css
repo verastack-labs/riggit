@@ -381,3 +381,108 @@
     }
   }
 }
+
+/* Variation: the grid as the page rather than as a panel.
+ *
+ * Same timing model as the panel demo, so the two can be compared on their
+ * composition rather than on their pacing. */
+
+.riggit-canvas-track {
+  height: calc(var(--demo-beats) * 100vh);
+}
+
+.riggit-canvas-stage {
+  position: sticky;
+  top: var(--header-h);
+  height: calc(100vh - var(--header-h));
+  overflow: hidden;
+}
+
+.riggit-canvas-vignette {
+  background:
+    radial-gradient(
+      ellipse at center,
+      transparent 38%,
+      var(--color-page) 78%
+    );
+}
+
+.riggit-canvas-layer {
+  opacity: 0;
+}
+
+.riggit-canvas-layer:last-child {
+  opacity: 1;
+}
+
+.riggit-canvas-beat {
+  transform: translateY(-50%);
+}
+
+.riggit-canvas-beat:first-child {
+  opacity: 1;
+}
+
+.riggit-canvas-beat:not(:first-child) {
+  opacity: 0;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .riggit-canvas-track {
+      view-timeline-name: --canvas;
+      view-timeline-axis: block;
+    }
+
+    /* Copy crossfades in place rather than stepping through slots. Over a
+     * full-bleed field there is no column for items to travel along, and a
+     * single centred statement is what lets the field stay the subject. */
+    @keyframes riggit-canvas-beat {
+      0%,
+      30% {
+        opacity: 0;
+        transform: translateY(calc(-50% + 1.25rem));
+      }
+      44%,
+      56% {
+        opacity: 1;
+        transform: translateY(-50%);
+      }
+      70%,
+      100% {
+        opacity: 0;
+        transform: translateY(calc(-50% - 1.25rem));
+      }
+    }
+
+    .riggit-canvas-beat,
+    .riggit-canvas-beat:first-child,
+    .riggit-canvas-beat:not(:first-child) {
+      animation: riggit-canvas-beat linear both;
+      animation-timeline: --canvas;
+      animation-range: contain var(--from) contain var(--to);
+    }
+
+    @keyframes riggit-canvas-layer {
+      0%,
+      28% {
+        opacity: 0;
+      }
+      44%,
+      56% {
+        opacity: 1;
+      }
+      72%,
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .riggit-canvas-layer,
+    .riggit-canvas-layer:last-child {
+      animation: riggit-canvas-layer linear both;
+      animation-timeline: --canvas;
+      animation-range: contain var(--from) contain var(--to);
+    }
+  }
+}
