@@ -7,3 +7,7 @@ next-env.d.ts
 
 # Build output, kept separate from the dev server directory.
 .next-build/
+
+# Local tooling, downloaded on demand. Never committed: a 52MB binary has no
+# business in a landing page repository.
+.tools/
