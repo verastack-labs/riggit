@@ -1,4 +1,4 @@
-const WEEKS = 40;
+const WEEKS = 26;
 const DAYS = 7;
 
 /**
@@ -25,7 +25,7 @@ function restingLevel(week: number, day: number): number {
 
   // The gaps the pitch is about: a fortnight offline, and a fortnight where
   // the work happened but never got committed.
-  const inDeadZone = (week >= 9 && week <= 13) || (week >= 24 && week <= 27);
+  const inDeadZone = (week >= 6 && week <= 10) || (week >= 16 && week <= 19);
   if (inDeadZone) return noise(week, day) > 0.88 ? 1 : 0;
 
   const roll = noise(week, day);
@@ -62,16 +62,16 @@ export function ContributionGraph() {
 
       // Filled left to right so it reads as time passing rather than as a
       // random sparkle.
-      const delay = 900 + week * 55 + noise(day, week) * 260;
+      const delay = 900 + week * 78 + noise(day, week) * 260;
 
       cells.push(
         <rect
           key={`${week}-${day}`}
-          x={week * 15}
-          y={day * 15}
-          width={11}
-          height={11}
-          rx={3}
+          x={week * 22}
+          y={day * 22}
+          width={17}
+          height={17}
+          rx={5}
           fill={isGap ? LEVEL_FILL[0] : LEVEL_FILL[level]}
           className={isGap ? "riggit-gap" : undefined}
           style={isGap ? { animationDelay: `${Math.round(delay)}ms` } : undefined}
@@ -82,7 +82,7 @@ export function ContributionGraph() {
 
   return (
     <svg
-      viewBox={`0 0 ${WEEKS * 15 - 4} ${DAYS * 15 - 4}`}
+      viewBox={`0 0 ${WEEKS * 22 - 5} ${DAYS * 22 - 5}`}
       className="w-full"
       role="img"
       aria-label="A GitHub contribution graph with gaps in it, filling in until the year is unbroken"

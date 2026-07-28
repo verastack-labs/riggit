@@ -150,6 +150,9 @@ export function SiteHeader() {
         scrolled || menuMounted
           ? "border-b border-edge bg-page/80 backdrop-blur-md"
           : "border-b border-transparent",
+        // The seam below replaces it while the sheet is open, so a flat rule
+        // and a gradient are never stacked on the same pixel row.
+        menuMounted && "border-transparent sm:border-edge",
       )}
     >
       <div className="mx-auto flex h-16 max-w-[1080px] items-center gap-8 px-6">
@@ -210,10 +213,16 @@ export function SiteHeader() {
             href="/download"
             className={cn(
               "rounded-field bg-accent px-4 py-2 text-[13px] font-medium text-accent-ink",
-              "transition-colors duration-150 hover:bg-accent-bright",
+              "transition-[background-color,opacity,transform] duration-200 ease-out hover:bg-accent-bright",
               "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-              // The sheet carries its own, larger. Two at once reads as a bug.
-              menuMounted && "max-sm:hidden",
+              // The sheet carries its own, larger. Two at once reads as a bug,
+              // so this one leaves: it used to be switched off outright, which
+              // read as a glitch rather than a handover.
+              // Mobile-first: the leaving state is the default and desktop
+              // restores it. Written as max-sm: variants this silently did
+              // nothing, while every min-width variant in this codebase works.
+              menuMounted &&
+                "pointer-events-none -translate-y-1 scale-95 opacity-0 sm:pointer-events-auto sm:translate-y-0 sm:scale-100 sm:opacity-100",
             )}
           >
             Download
@@ -254,6 +263,19 @@ export function SiteHeader() {
         </div>
       </div>
 
+        {/* Draws along the header's bottom edge while the sheet is open:
+            accent at the centre, nothing at the ends, opening outwards. A flat
+            rule across the full width read as a hard seam between two panels
+            rather than as one surface opening. */}
+        {menuMounted ? (
+          <span
+            aria-hidden="true"
+            className={cn(
+              "riggit-seam pointer-events-none absolute inset-x-0 bottom-0 h-px sm:hidden",
+              menu === "open" ? "riggit-seam-in" : "riggit-seam-out",
+            )}
+          />
+        ) : null}
       </header>
 
       {/* Sibling of the header, not a child. `backdrop-filter` on the header
