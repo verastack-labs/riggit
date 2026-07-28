@@ -179,6 +179,19 @@
   to { opacity: 0; }
 }
 
+/* The sheet's own surface. Written here rather than as a Tailwind opacity
+ * modifier so it is deterministic: this has to be an actual painted layer, and
+ * a class that silently fails to generate leaves a transparent overlay with
+ * the page showing straight through it. */
+.riggit-sheet {
+  /* Surface only. Layout is Tailwind's job; this exists because a painted
+   * backdrop needs to be deterministic and an opacity modifier that silently
+   * fails to generate leaves a transparent overlay. */
+  background-color: color-mix(in srgb, var(--color-page) 94%, transparent);
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+}
+
 .riggit-sheet-in {
   animation: riggit-sheet-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -361,6 +374,43 @@
  * that without putting the panel back that this variation exists to remove. */
 .riggit-canvas-shape {
   filter: drop-shadow(0 0 28px rgb(53 208 140 / 0.18));
+}
+
+/* Below the large breakpoint the grid sits above the copy rather than beside
+ * it, so a slot offset that works in a tall column reaches straight into the
+ * grid. Narrow screens therefore show the centre beat only: the flanking ones
+ * leave completely instead of hovering over the artwork.
+ *
+ * Opacity and scale rather than blur. Blur is the most expensive thing to
+ * animate and this is the one breakpoint where that actually costs something. */
+@media (max-width: 1023px) {
+  /* The grid stacks above the copy here, and with the flanking beats hidden
+   * there is room to breathe. Drop it clear of the header rather than letting
+   * it sit right under the bar. */
+  .riggit-demo-stage {
+    padding-top: 3.5rem;
+  }
+
+  .riggit-demo-slots {
+    min-height: 17rem;
+  }
+
+  .riggit-demo-beat[data-slot="above"],
+  .riggit-demo-beat[data-slot="below"],
+  .riggit-demo-beat[data-slot="gone-above"],
+  .riggit-demo-beat[data-slot="gone-below"] {
+    opacity: 0;
+  }
+
+  .riggit-demo-beat[data-slot="above"],
+  .riggit-demo-beat[data-slot="gone-above"] {
+    transform: translateY(calc(-50% - 3.5rem)) scale(0.94);
+  }
+
+  .riggit-demo-beat[data-slot="below"],
+  .riggit-demo-beat[data-slot="gone-below"] {
+    transform: translateY(calc(-50% + 3.5rem)) scale(0.94);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
