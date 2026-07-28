@@ -44,6 +44,11 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
+  /* Layout constants the demo derives its geometry from. */
+  --header-h: 4rem;
+  --demo-beats: 4;
+  --slot: 12.5rem;
+
   /* Motion */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-fast: 150ms;
@@ -53,6 +58,10 @@
 
 @layer base {
   html {
+    /* Lets height transition to and from `auto`, which is what makes an
+     * accordion animate at all. Without it a keyword endpoint has no
+     * interpolable value and the panel simply snaps open. */
+    interpolate-size: allow-keywords;
     background-color: var(--color-page);
     color-scheme: dark;
   }
@@ -174,6 +183,78 @@
   to { opacity: 0; }
 }
 
+/* The sheet's own surface. Written here rather than as a Tailwind opacity
+ * modifier so it is deterministic: this has to be an actual painted layer, and
+ * a class that silently fails to generate leaves a transparent overlay with
+ * the page showing straight through it. */
+.riggit-sheet {
+  /* Surface only. Layout is Tailwind's job; this exists because a painted
+   * backdrop needs to be deterministic and an opacity modifier that silently
+   * fails to generate leaves a transparent overlay.
+   *
+   * Opaque by default. A sheet that lets the page through without blurring it
+   * is unreadable, so the see-through version is only switched on where the
+   * blur is actually supported. */
+  background-color: color-mix(in srgb, var(--color-page) 96%, transparent);
+}
+
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .riggit-sheet {
+    /* Light enough that the page reads through it, which is what makes the
+     * blur visible at all. At 94% it was doing the work of an opaque panel
+     * and the effect was invisible. The heavier blur keeps text legible at
+     * the lower opacity. */
+    background-color: color-mix(in srgb, var(--color-page) 58%, transparent);
+    backdrop-filter: blur(30px) saturate(150%);
+    -webkit-backdrop-filter: blur(30px) saturate(150%);
+  }
+}
+
+/* The seam. Accent at the centre falling to nothing at both ends, opening
+ * outwards from the middle as the sheet arrives. Scale on a one-pixel line is
+ * cheap: it is a composited transform, not a repaint. */
+.riggit-seam {
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--color-accent) 70%, transparent) 28%,
+    var(--color-accent) 50%,
+    color-mix(in srgb, var(--color-accent) 70%, transparent) 72%,
+    transparent 100%
+  );
+  transform-origin: center;
+}
+
+@keyframes riggit-seam-in {
+  from {
+    opacity: 0;
+    transform: scaleX(0.15);
+  }
+  to {
+    opacity: 0.95;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes riggit-seam-out {
+  from {
+    opacity: 0.95;
+    transform: scaleX(1);
+  }
+  to {
+    opacity: 0;
+    transform: scaleX(0.5);
+  }
+}
+
+.riggit-seam-in {
+  animation: riggit-seam-in 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.riggit-seam-out {
+  animation: riggit-seam-out 160ms ease-in both;
+}
+
 .riggit-sheet-in {
   animation: riggit-sheet-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -220,6 +301,8 @@
   .riggit-sheet-in,
   .riggit-sheet-out,
   .riggit-sheet-item,
+  .riggit-seam-in,
+  .riggit-seam-out,
   .riggit-reveal {
     animation: none;
   }
@@ -233,5 +316,206 @@
   .group:hover .riggit-mark-hover g {
     transition: none;
     transform: none;
+  }
+}
+
+/* The two demo sections.
+ *
+ * Both are stepped, not scrubbed. A hook quantises scroll into a step index
+ * and writes it onto each element; everything below is a plain CSS transition,
+ * so the section is only ever in one of its defined states and the movement
+ * between them runs on its own timing rather than the reader's scroll speed.
+ *
+ * Scroll-driven animation was tried for this first. It is the wrong tool by
+ * construction: it maps scroll straight onto progress, which is exactly the
+ * "stranded halfway" behaviour being avoided. */
+
+.riggit-demo-track,
+.riggit-canvas-track {
+  height: calc(var(--demo-beats) * 100vh);
+}
+
+.riggit-demo-stage,
+.riggit-canvas-stage {
+  position: sticky;
+  /* Centred in what is left below the header, so the middle copy slot and the
+   * middle of the grid sit on the same horizontal line. */
+  top: var(--header-h);
+  height: calc(100vh - var(--header-h));
+}
+
+.riggit-canvas-stage {
+  overflow: hidden;
+}
+
+.riggit-demo-stage {
+  display: flex;
+  justify-content: center;
+}
+
+.riggit-demo-slots {
+  height: 100%;
+  min-height: 22rem;
+}
+
+/* Three slots and two exits. An item is centred, dimmed above, dimmed below,
+ * or gone; never anywhere between. */
+.riggit-demo-beat {
+  transform-origin: center;
+  transition:
+    opacity var(--duration-slow) var(--ease-standard),
+    transform var(--duration-slow) var(--ease-standard);
+}
+
+.riggit-demo-beat[data-slot="primary"] {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+.riggit-demo-beat[data-slot="above"] {
+  opacity: 0.3;
+  transform: translateY(calc(-50% - var(--slot))) scale(0.9);
+}
+
+.riggit-demo-beat[data-slot="below"] {
+  opacity: 0.3;
+  transform: translateY(calc(-50% + var(--slot))) scale(0.9);
+}
+
+.riggit-demo-beat[data-slot="gone-above"] {
+  opacity: 0;
+  transform: translateY(calc(-50% - var(--slot) * 1.7)) scale(0.86);
+}
+
+.riggit-demo-beat[data-slot="gone-below"] {
+  opacity: 0;
+  transform: translateY(calc(-50% + var(--slot) * 1.7)) scale(0.86);
+}
+
+/* Patterns sit over a base grid that is never hidden, so only the lit cells
+ * fade in and out. */
+.riggit-demo-layer,
+.riggit-canvas-layer {
+  opacity: 0;
+  transition: opacity var(--duration-slow) var(--ease-standard);
+}
+
+.riggit-demo-layer[data-active="true"],
+.riggit-canvas-layer[data-active="true"] {
+  opacity: 1;
+}
+
+/* The full-bleed field. A tiled background rather than a fixed cell count, so
+ * it covers any viewport and is always cut off by the edges. */
+.riggit-canvas-field {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34'%3E%3Crect width='26' height='26' rx='7' fill='%23141a16'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: repeat;
+}
+
+.riggit-canvas-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 34%,
+    var(--color-page) 82%
+  );
+}
+
+.riggit-canvas-beat {
+  opacity: 0;
+  transform: translateY(1.25rem);
+  transition:
+    opacity var(--duration-slow) var(--ease-standard),
+    transform var(--duration-slow) var(--ease-standard);
+}
+
+.riggit-canvas-beat[data-active="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* The shape sits above the copy rather than behind it. Bright accent cells
+ * directly under text destroyed its contrast, and no amount of scrim fixes
+ * that without putting the panel back that this variation exists to remove. */
+.riggit-canvas-shape {
+  filter: drop-shadow(0 0 28px rgb(53 208 140 / 0.18));
+}
+
+/* Below the large breakpoint the grid sits above the copy rather than beside
+ * it, so a slot offset that works in a tall column reaches straight into the
+ * grid. Narrow screens therefore show the centre beat only: the flanking ones
+ * leave completely instead of hovering over the artwork.
+ *
+ * Opacity and scale rather than blur. Blur is the most expensive thing to
+ * animate and this is the one breakpoint where that actually costs something. */
+@media (max-width: 1023px) {
+  /* The grid stacks above the copy here, and with the flanking beats hidden
+   * there is room to breathe. Drop it clear of the header rather than letting
+   * it sit right under the bar. */
+  .riggit-demo-stage {
+    padding-top: 3.5rem;
+  }
+
+  .riggit-demo-slots {
+    min-height: 17rem;
+  }
+
+  .riggit-demo-beat[data-slot="above"],
+  .riggit-demo-beat[data-slot="below"],
+  .riggit-demo-beat[data-slot="gone-above"],
+  .riggit-demo-beat[data-slot="gone-below"] {
+    opacity: 0;
+  }
+
+  .riggit-demo-beat[data-slot="above"],
+  .riggit-demo-beat[data-slot="gone-above"] {
+    transform: translateY(calc(-50% - 3.5rem)) scale(0.94);
+  }
+
+  .riggit-demo-beat[data-slot="below"],
+  .riggit-demo-beat[data-slot="gone-below"] {
+    transform: translateY(calc(-50% + 3.5rem)) scale(0.94);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .riggit-demo-beat,
+  .riggit-demo-layer,
+  .riggit-canvas-beat,
+  .riggit-canvas-layer {
+    transition: none;
+  }
+}
+
+/* Accordion.
+ *
+ * `details` gives the semantics, keyboard behaviour and in-page find for free,
+ * but no open/close animation: the browser toggles the content between shown
+ * and hidden with nothing in between. `::details-content` is the hook for it.
+ *
+ * `allow-discrete` is what carries `content-visibility` across the transition;
+ * without it the content vanishes on frame one and the height animates against
+ * an empty box. Where none of this is supported the panel snaps, which is
+ * exactly the behaviour being replaced, so the floor is unchanged. */
+@supports selector(details::details-content) {
+  details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition:
+      block-size var(--duration-slow) var(--ease-standard),
+      opacity var(--duration-slow) var(--ease-standard),
+      content-visibility var(--duration-slow) allow-discrete;
+  }
+
+  details[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  details::details-content {
+    transition: none;
   }
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ContributionGraph } from "@/components/contribution-graph";
+import { CanvasDemo } from "@/components/canvas-demo";
 import {
   ClosingSection,
   FaqSection,
@@ -84,6 +85,7 @@ export default function Home() {
       </section>
 
       <ProblemSection />
+      <CanvasDemo />
       <PricingTeaser />
       <FaqSection />
       <ClosingSection />

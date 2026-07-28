@@ -16,6 +16,11 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 const nextConfig: NextConfig = {
   output: "export",
+  // `next build` and `next dev` share `.next` by default, and a build run
+  // while dev is up leaves the dev server serving chunks that no longer
+  // exist ("Cannot find module './899.js'"). Giving the build its own
+  // directory makes the two impossible to collide.
+  distDir: process.env.NEXT_DIST_DIR ?? ".next",
   basePath,
   // Without this, GitHub Pages serves /riggit/about as a 404 rather than
   // finding /riggit/about/index.html.
