@@ -1,6 +1,9 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { ContributionGraph } from "@/components/contribution-graph";
 import { CanvasDemo } from "@/components/canvas-demo";
+import { HeroWash } from "@/components/hero-wash";
+import { LitWord } from "@/components/lit-word";
 import {
   ClosingSection,
   FaqSection,
@@ -22,46 +25,39 @@ export default function Home() {
       {/* The opening and its proof share one wrapper so they sit in the same
           pool of light. Split across two bare sections they read as two
           unrelated boxes, and the graph, which is the whole argument, ends up
-          dressed exactly like the pricing panel further down.
-
-          `isolate` keeps the light's negative z-index inside this subtree, well
-          clear of the sticky header.
-
-          `overflow-x-clip` is load-bearing, not tidiness. The layers below are
-          full width and animate `transform`, so scaling or translating them
-          pushes past the viewport and raises a horizontal scrollbar that comes
-          and goes on the animation's own cycle. Clip rather than hidden, so
-          the vertical axis stays visible instead of becoming a scroll
-          container. */}
-      <div className="relative isolate overflow-x-clip">
-        <div
-          aria-hidden="true"
-          className="riggit-hero-lift pointer-events-none absolute inset-x-0 top-0 -z-10 h-[680px] sm:h-[880px]"
-        />
-        <div
-          aria-hidden="true"
-          className="riggit-hero-drift pointer-events-none absolute inset-x-0 top-0 -z-10 h-[680px] sm:h-[880px]"
-        />
-
+          dressed exactly like the pricing panel further down. */}
+      <HeroWash>
         {/* Tighter at the top than the rhythm below it. The header is already
             64px of empty space, so the section's own padding is the second
             gap the eye crosses, not the first. */}
         <section className="mx-auto max-w-[1080px] px-6 pt-14 pb-16 sm:pt-20">
           <div className="flex flex-col items-center text-center">
-            <span className="mb-7 text-[10.5px] font-semibold tracking-[0.11em] text-ink-muted uppercase">
+            <span
+              className="riggit-enter mb-7 text-[10.5px] font-semibold tracking-[0.11em] text-ink-muted uppercase"
+              style={{ "--enter-delay": "40ms" } as CSSProperties}
+            >
               For developers who did the work
             </span>
 
-            <h1 className="max-w-[15ch] text-[clamp(2.6rem,7vw,4.75rem)] leading-[0.98] font-medium tracking-[-0.035em] text-balance text-ink">
-              {brand.tagline}
+            <h1
+              className="riggit-enter max-w-[15ch] text-[clamp(2.6rem,7vw,4.75rem)] leading-[0.98] font-medium tracking-[-0.035em] text-balance text-ink"
+              style={{ "--enter-delay": "110ms" } as CSSProperties}
+            >
+              <LitWord text={brand.tagline} word={brand.taglineAccent} />
             </h1>
 
-            <p className="mt-6 max-w-[46ch] text-[16.5px] leading-[1.6] text-ink-secondary text-pretty">
+            <p
+              className="riggit-enter mt-6 max-w-[46ch] text-[16.5px] leading-[1.6] text-ink-secondary text-pretty"
+              style={{ "--enter-delay": "200ms" } as CSSProperties}
+            >
               Commit at any date and time. Backfill the week you worked offline,
               the project you imported late, the day you forgot to push.
             </p>
 
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <div
+              className="riggit-enter mt-10 flex flex-wrap items-center justify-center gap-3"
+              style={{ "--enter-delay": "290ms" } as CSSProperties}
+            >
               <Link
                 href="/download"
                 /* The only button on the site carrying a glow. It sits inside
@@ -79,7 +75,10 @@ export default function Home() {
               </Link>
             </div>
 
-            <p className="mt-4 text-[12.5px] text-ink-muted">
+            <p
+              className="riggit-enter mt-4 text-[12.5px] text-ink-muted"
+              style={{ "--enter-delay": "370ms" } as CSSProperties}
+            >
               Three commits free. No account needed.
             </p>
           </div>
@@ -113,7 +112,7 @@ export default function Home() {
             </figcaption>
           </figure>
         </section>
-      </div>
+      </HeroWash>
 
       <ProblemSection />
       <CanvasDemo />

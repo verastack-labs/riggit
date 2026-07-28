@@ -160,11 +160,15 @@
     rgb(53 208 140 / 16%),
     rgb(53 208 140 / 0%) 68%
   );
-  /* 12s is the graph's full cycle: 6s of keyframes played forwards and then
-   * backwards. The delay matches the graph's own head start, set in
-   * contribution-graph.tsx, so the light peaks in the middle of the filled
-   * state rather than leading the thing it is supposed to be responding to.
-   * The two numbers have to move together. */
+  /* 12s is where the home graph's full cycle landed: 6s of keyframes played
+   * forwards and then backwards. The delay matches the graph's own head start,
+   * set in contribution-graph.tsx, so on home the light peaks in the middle of
+   * the filled state rather than leading the thing it responds to, and the two
+   * numbers have to move together.
+   *
+   * On the other pages there is no graph and the period is simply slow. The
+   * wash is shared rather than tuned per page because a house style that
+   * changes rhythm between routes reads as three different sites. */
   animation: riggit-hero-lift 12s ease-in-out 500ms infinite;
 }
 
@@ -193,6 +197,19 @@
      * stops, and the near layer is held up rather than at its dimmest. */
     animation: none;
     opacity: 0.9;
+  }
+
+  .riggit-gradient-text {
+    /* The gradient stays, since it is colour rather than motion; only the
+     * drift stops. */
+    animation: none;
+  }
+
+  .riggit-enter {
+    /* Cancelled outright rather than shortened. This one starts at opacity 0,
+     * so it is the single rule here where getting it wrong hides content
+     * rather than merely stilling it. */
+    animation: none;
   }
 }
 
@@ -519,6 +536,74 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34'%3E%3Crect x='4' y='4' width='26' height='26' rx='7' fill='%23141a16'/%3E%3C/svg%3E");
   background-position: center;
   background-repeat: repeat;
+}
+
+/* One word of a heading lit rather than coloured.
+ *
+ * The text is the window and the gradient is behind it, which is the whole
+ * difference from a coloured span: the letterforms show the light instead of
+ * carrying a flat tint, so thin strokes pick up the same falloff as thick
+ * ones. The green sits in the lower half, where it reads as the contribution
+ * green rising into the word rather than as a highlighter over it.
+ *
+ * The image is taller than the box so there is somewhere to travel, and it
+ * drifts slowly instead of holding still. Movement here is worth more than the
+ * gradient alone: a static one reads as a colour choice, a moving one reads as
+ * light falling on something.
+ *
+ * All of it is guarded, because `color: transparent` without the clip is an
+ * invisible word rather than a plain one. Unsupported browsers get the
+ * heading's ordinary colour and never know. */
+@keyframes riggit-gradient-drift {
+  0%,
+  100% {
+    background-position: 0% 14%;
+  }
+  50% {
+    background-position: 0% 62%;
+  }
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .riggit-gradient-text {
+    background-image: linear-gradient(
+      180deg,
+      var(--color-ink) 0%,
+      var(--color-ink) 40%,
+      var(--color-accent-bright) 100%
+    );
+    background-size: 100% 220%;
+    background-position: 0% 14%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: riggit-gradient-drift 9s ease-in-out infinite;
+  }
+}
+
+/* Page entry, staggered by whatever sets --enter-delay.
+ *
+ * Deliberately small: 10px of travel, not 40. This runs on every page load, so
+ * it is the motion a returning visitor sees most often, and the threshold for
+ * a thing being tiresome is much lower than for one they see once.
+ *
+ * `both` holds the start frame through the delay, which is what makes the
+ * stagger read as a sequence rather than as everything sliding at once from
+ * different offsets. */
+@keyframes riggit-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.riggit-enter {
+  animation: riggit-enter 640ms var(--ease-standard) var(--enter-delay, 0ms)
+    both;
 }
 
 /* The early access card's border, and the only one on the site.

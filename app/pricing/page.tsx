@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
+import { HeroWash } from "@/components/hero-wash";
 import { brand } from "@/lib/brand";
 import { cn } from "@/lib/cn";
 
@@ -74,21 +76,33 @@ function Price({ amount, note }: { amount: string; note: string }) {
 export default function Pricing() {
   return (
     <main>
-      <section className="mx-auto max-w-[1080px] px-6 pt-14 pb-4 sm:pt-20">
-        <span className="text-[10.5px] font-semibold tracking-[0.11em] text-ink-muted uppercase">
-          Pricing
-        </span>
+      <HeroWash>
+        <section className="mx-auto max-w-[1080px] px-6 pt-14 pb-4 sm:pt-20">
+          <span
+            className="riggit-enter text-[10.5px] font-semibold tracking-[0.11em] text-ink-muted uppercase"
+            style={{ "--enter-delay": "40ms" } as CSSProperties}
+          >
+            Pricing
+          </span>
 
-        <h1 className="mt-6 max-w-[16ch] text-[clamp(2.4rem,6vw,4rem)] leading-[1] font-medium tracking-[-0.035em] text-balance text-ink">
-          The price you join at is the price you keep.
-        </h1>
+          <h1
+            className="riggit-enter mt-6 max-w-[16ch] text-[clamp(2.4rem,6vw,4rem)] leading-[1] font-medium tracking-[-0.035em] text-balance text-ink"
+            style={{ "--enter-delay": "110ms" } as CSSProperties}
+          >
+            The price you join at is the price you{" "}
+            <span className="riggit-gradient-text">keep</span>.
+          </h1>
 
-        <p className="mt-6 max-w-[54ch] text-[16.5px] leading-[1.6] text-ink-secondary text-pretty">
-          One seat per person, one device per seat. Early access is limited and
-          the rate steps up as it fills, but it never steps up underneath
-          someone who already joined.
-        </p>
-      </section>
+          <p
+            className="riggit-enter mt-6 max-w-[54ch] text-[16.5px] leading-[1.6] text-ink-secondary text-pretty"
+            style={{ "--enter-delay": "200ms" } as CSSProperties}
+          >
+            One seat per person, one device per seat. Early access is limited
+            and the rate steps up as it fills, but it never steps up underneath
+            someone who already joined.
+          </p>
+        </section>
+      </HeroWash>
 
       <section
         aria-labelledby="tiers-heading"

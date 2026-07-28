@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import { DemoSection } from "@/components/demo-section";
+import { HeroWash } from "@/components/hero-wash";
 import {
   BoundariesSection,
   CapabilitiesSection,
@@ -27,21 +29,36 @@ export const metadata: Metadata = {
 export default function Product() {
   return (
     <main>
-      <section className="mx-auto max-w-[1080px] px-6 pt-14 pb-4 sm:pt-20">
-        <span className="text-[10.5px] font-semibold tracking-[0.11em] text-ink-muted uppercase">
-          The product
-        </span>
+      <HeroWash>
+        <section className="mx-auto max-w-[1080px] px-6 pt-14 pb-4 sm:pt-20">
+          <span
+            className="riggit-enter text-[10.5px] font-semibold tracking-[0.11em] text-ink-muted uppercase"
+            style={{ "--enter-delay": "40ms" } as CSSProperties}
+          >
+            The product
+          </span>
 
-        <h1 className="mt-6 max-w-[17ch] text-[clamp(2.4rem,6vw,4rem)] leading-[1] font-medium tracking-[-0.035em] text-balance text-ink">
-          Write the commit. Choose when it happened.
-        </h1>
+          <h1
+            className="riggit-enter mt-6 max-w-[17ch] text-[clamp(2.4rem,6vw,4rem)] leading-[1] font-medium tracking-[-0.035em] text-balance text-ink"
+            style={{ "--enter-delay": "110ms" } as CSSProperties}
+          >
+            {/* The class directly rather than LitWord, which exists to pick a
+                word out of a brand string it must not hardcode. This heading
+                is page copy, so the split is already made. */}
+            Write the <span className="riggit-gradient-text">commit</span>.
+            Choose when it happened.
+          </h1>
 
-        <p className="mt-6 max-w-[54ch] text-[16.5px] leading-[1.6] text-ink-secondary text-pretty">
-          Riggit is a desktop app, about the size of a calculator. Point it at a
-          repository you already have, write a message, pick a date and a time,
-          and commit. That is the whole product.
-        </p>
-      </section>
+          <p
+            className="riggit-enter mt-6 max-w-[54ch] text-[16.5px] leading-[1.6] text-ink-secondary text-pretty"
+            style={{ "--enter-delay": "200ms" } as CSSProperties}
+          >
+            Riggit is a desktop app, about the size of a calculator. Point it at
+            a repository you already have, write a message, pick a date and a
+            time, and commit. That is the whole product.
+          </p>
+        </section>
+      </HeroWash>
 
       <DemoSection />
       <CapabilitiesSection />
