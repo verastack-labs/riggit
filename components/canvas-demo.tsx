@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { BEATS, GRID } from "@/lib/patterns";
+import { BEATS, GRID, levelOpacity } from "@/lib/patterns";
 import { useStep } from "@/lib/use-step";
 
 /** Chunky, so the field reads as contribution squares at arm's length rather
@@ -30,48 +30,54 @@ export function CanvasDemo() {
     <section className="riggit-canvas relative">
       <div ref={trackRef} className="riggit-canvas-track">
         <div className="riggit-canvas-stage">
-          {/* Field only. The lit shape moved out of here and into the flow
-              below, so nothing bright sits behind the words. */}
+          {/* The vignette stays anchored to the stage, since its job is to
+              dissolve the field at the stage's own edges. The field itself
+              does not: see below. */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 overflow-hidden"
-          >
-            {/* Tiles infinitely: no viewport is too wide for it. */}
-            <div className="riggit-canvas-field absolute inset-0" />
-            {/* Removes the hard edge so the field has no visible boundary. */}
-            <div className="riggit-canvas-vignette absolute inset-0" />
-          </div>
+            className="riggit-canvas-vignette pointer-events-none absolute inset-0 overflow-hidden"
+          />
 
           <div className="relative mx-auto flex h-full max-w-[1080px] flex-col items-center justify-center gap-10 px-6">
-            <svg
-              aria-hidden="true"
-              className="riggit-canvas-shape shrink-0"
-              width={size}
-              height={size}
-            >
-              {BEATS.map((beat, index) => (
-                <g
-                  key={beat.key}
-                  data-active={index === step}
-                  className="riggit-canvas-layer"
-                >
-                  {beat.cells.map((level, i) =>
-                    level === 0 ? null : (
-                      <rect
-                        key={i}
-                        x={(i % GRID) * PITCH}
-                        y={Math.floor(i / GRID) * PITCH}
-                        width={CELL}
-                        height={CELL}
-                        rx={7}
-                        fill="var(--color-accent)"
-                        opacity={0.4 + level * 0.15}
-                      />
-                    ),
-                  )}
-                </g>
-              ))}
-            </svg>
+            {/* The field hangs off the shape's own box so the two grids share
+                an origin, and it sits at a negative depth so it still passes
+                under the copy. The stage is sticky, which makes it a stacking
+                context, so that depth cannot escape past the vignette. */}
+            <div className="relative shrink-0">
+              <div
+                aria-hidden="true"
+                className="riggit-canvas-field pointer-events-none -z-10"
+              />
+              <svg
+                aria-hidden="true"
+                className="riggit-canvas-shape block"
+                width={size}
+                height={size}
+              >
+                {BEATS.map((beat, index) => (
+                  <g
+                    key={beat.key}
+                    data-active={index === step}
+                    className="riggit-canvas-layer"
+                  >
+                    {beat.cells.map((level, i) =>
+                      level === 0 ? null : (
+                        <rect
+                          key={i}
+                          x={(i % GRID) * PITCH}
+                          y={Math.floor(i / GRID) * PITCH}
+                          width={CELL}
+                          height={CELL}
+                          rx={7}
+                          fill="var(--color-accent)"
+                          opacity={levelOpacity(level)}
+                        />
+                      ),
+                    )}
+                  </g>
+                ))}
+              </svg>
+            </div>
 
             <ol className="relative h-[13rem] w-full shrink-0">
               {BEATS.map((beat, index) => (
