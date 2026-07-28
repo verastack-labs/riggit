@@ -58,6 +58,10 @@
 
 @layer base {
   html {
+    /* Lets height transition to and from `auto`, which is what makes an
+     * accordion animate at all. Without it a keyword endpoint has no
+     * interpolable value and the panel simply snaps open. */
+    interpolate-size: allow-keywords;
     background-color: var(--color-page);
     color-scheme: dark;
   }
@@ -479,6 +483,39 @@
   .riggit-demo-layer,
   .riggit-canvas-beat,
   .riggit-canvas-layer {
+    transition: none;
+  }
+}
+
+/* Accordion.
+ *
+ * `details` gives the semantics, keyboard behaviour and in-page find for free,
+ * but no open/close animation: the browser toggles the content between shown
+ * and hidden with nothing in between. `::details-content` is the hook for it.
+ *
+ * `allow-discrete` is what carries `content-visibility` across the transition;
+ * without it the content vanishes on frame one and the height animates against
+ * an empty box. Where none of this is supported the panel snaps, which is
+ * exactly the behaviour being replaced, so the floor is unchanged. */
+@supports selector(details::details-content) {
+  details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition:
+      block-size var(--duration-slow) var(--ease-standard),
+      opacity var(--duration-slow) var(--ease-standard),
+      content-visibility var(--duration-slow) allow-discrete;
+  }
+
+  details[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  details::details-content {
     transition: none;
   }
 }
