@@ -37,7 +37,11 @@ export function ProblemSection() {
   return (
     <section
       aria-labelledby="problem-heading"
-      className="riggit-reveal mx-auto max-w-[1080px] px-6 pt-32 sm:pt-44"
+      /* The bottom padding is not symmetry, it is a runway. What follows is a
+         sticky section that takes the whole viewport the moment it is reached,
+         so without a gap the last line here is still on screen as the demo
+         starts pinning, and the two read as one collision. */
+      className="riggit-reveal mx-auto max-w-[1080px] px-6 pt-32 pb-24 sm:pt-44 sm:pb-36"
     >
       <div>
         <h2
