@@ -50,6 +50,11 @@ typography:
     fontSize: "15.5px"
     fontWeight: 400
     lineHeight: 1.6
+  nav-sheet:
+    fontFamily: "var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif"
+    fontSize: "30px"
+    fontWeight: 500
+    letterSpacing: "-0.03em"
   wordmark:
     fontFamily: "var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif"
     fontSize: "15px"
@@ -174,6 +179,7 @@ The typeface also differs on purpose: the app uses the OS system stack, the site
 | Page title | `clamp(2rem, 5vw, 3.2rem)`, 500, -0.03em | The h1 on every other route |
 | Lead | 16.5px, 400 | The paragraph directly under a headline |
 | Body | 15.5px, 400 | Running copy |
+| Nav sheet | 30px, 500, -0.03em | Links in the full-screen mobile menu, where the row becomes the whole page |
 | UI | 13.5px, 400 | Navigation, controls, footer links |
 | Caption | 12.5px, 400 | Supporting notes, trial terms |
 | Micro label | 10.5px, 600, +0.09em, uppercase | Section labels, carried over from the app |
