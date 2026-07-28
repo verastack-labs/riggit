@@ -46,7 +46,7 @@
 
   /* Layout constants the demo derives its geometry from. */
   --header-h: 4rem;
-  --demo-beats: 5;
+  --demo-beats: 4;
   --slot: 8.5rem;
 
   /* Motion */
@@ -301,41 +301,42 @@
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .riggit-demo {
-      timeline-scope: --demo;
-    }
-
+    /* view-timeline, not scroll-timeline. scroll-timeline builds a timeline
+     * from the element's own scrollport, and the track is not a scroll
+     * container, so the name never resolved and every animation sat inactive.
+     * view-timeline tracks the element's progress through the viewport, which
+     * is what a pinned section actually needs.
+     *
+     * No timeline-scope: everything that uses the name is a descendant of the
+     * element that declares it. */
     .riggit-demo-track {
-      scroll-timeline-name: --demo;
-      scroll-timeline-axis: block;
+      view-timeline-name: --demo;
+      view-timeline-axis: block;
     }
 
     /* Three slots. An item is nothing, then dim below, then primary at the
      * centre, then dim above, then nothing. Long plateaus and short moves are
      * what make it read as stepping rather than drifting. */
+    /* Long holds, short moves. The plateau is on primary, which is what makes
+     * a beat feel like it stops rather than passes through. Opacity, position
+     * and scale all move on the same span, so one change reads as one event. */
     @keyframes riggit-demo-beat {
       0% {
         opacity: 0;
         transform: translateY(calc(-50% + var(--slot))) scale(0.97);
       }
-      9% {
+      12%,
+      36% {
         opacity: 0.34;
         transform: translateY(calc(-50% + var(--slot))) scale(0.97);
       }
-      34% {
-        opacity: 0.34;
-        transform: translateY(calc(-50% + var(--slot))) scale(0.97);
-      }
-      43%,
-      57% {
+      44%,
+      56% {
         opacity: 1;
         transform: translateY(-50%) scale(1);
       }
-      66% {
-        opacity: 0.34;
-        transform: translateY(calc(-50% - var(--slot))) scale(0.97);
-      }
-      91% {
+      64%,
+      88% {
         opacity: 0.34;
         transform: translateY(calc(-50% - var(--slot))) scale(0.97);
       }
@@ -350,19 +351,23 @@
     .riggit-demo-beat:not(:first-child) {
       animation: riggit-demo-beat linear both;
       animation-timeline: --demo;
-      animation-range: var(--from) var(--to);
+      animation-range: contain var(--from) contain var(--to);
     }
 
     /* The grid crossfades on the same windows, so a pattern is fully itself
      * exactly while its copy holds the centre slot. */
+    /* Each pattern is fully itself exactly while its copy holds the centre,
+     * and crossfades with its neighbours in between. */
     @keyframes riggit-demo-layer {
-      0% {
+      0%,
+      28% {
         opacity: 0;
       }
-      34%,
-      66% {
+      44%,
+      56% {
         opacity: 1;
       }
+      72%,
       100% {
         opacity: 0;
       }
@@ -372,7 +377,7 @@
     .riggit-demo-layer:last-child {
       animation: riggit-demo-layer linear both;
       animation-timeline: --demo;
-      animation-range: var(--from) var(--to);
+      animation-range: contain var(--from) contain var(--to);
     }
   }
 }
