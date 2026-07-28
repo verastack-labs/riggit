@@ -186,10 +186,24 @@
 .riggit-sheet {
   /* Surface only. Layout is Tailwind's job; this exists because a painted
    * backdrop needs to be deterministic and an opacity modifier that silently
-   * fails to generate leaves a transparent overlay. */
-  background-color: color-mix(in srgb, var(--color-page) 94%, transparent);
-  backdrop-filter: blur(20px) saturate(120%);
-  -webkit-backdrop-filter: blur(20px) saturate(120%);
+   * fails to generate leaves a transparent overlay.
+   *
+   * Opaque by default. A sheet that lets the page through without blurring it
+   * is unreadable, so the see-through version is only switched on where the
+   * blur is actually supported. */
+  background-color: color-mix(in srgb, var(--color-page) 96%, transparent);
+}
+
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .riggit-sheet {
+    /* Light enough that the page reads through it, which is what makes the
+     * blur visible at all. At 94% it was doing the work of an opaque panel
+     * and the effect was invisible. The heavier blur keeps text legible at
+     * the lower opacity. */
+    background-color: color-mix(in srgb, var(--color-page) 58%, transparent);
+    backdrop-filter: blur(30px) saturate(150%);
+    -webkit-backdrop-filter: blur(30px) saturate(150%);
+  }
 }
 
 /* The seam. Accent at the centre falling to nothing at both ends, opening
