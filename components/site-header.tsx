@@ -18,12 +18,16 @@ type Indicator = { left: number; width: number; visible: boolean };
 /**
  * One indicator slides between items rather than each item lighting on its
  * own. That single shared element is what makes the row read as a control
- * instead of a list of links, and it is the reason the header feels built.
+ * instead of a list of links.
  *
  * It is a CSS transition, not a keyframe animation, precisely because
  * transitions interpolate from wherever the element currently is. Sweeping
  * the cursor across the row therefore redirects it mid-flight instead of
  * restarting it, which is the difference between fluid and twitchy.
+ *
+ * Below the small breakpoint the row collapses into a menu. The links are the
+ * same set in the same order: a narrow screen gets a different affordance,
+ * never a smaller product.
  */
 export function SiteHeader() {
   const pathname = usePathname();
@@ -35,6 +39,7 @@ export function SiteHeader() {
   });
   const [settled, setSettled] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const moveTo = useCallback((element: HTMLElement | null) => {
     const nav = navRef.current;
@@ -59,7 +64,6 @@ export function SiteHeader() {
       return;
     }
 
-    // No active route in this row, so the indicator has nowhere to rest.
     setIndicator((current) => ({ ...current, visible: false }));
   }, [moveTo]);
 
@@ -71,6 +75,10 @@ export function SiteHeader() {
     const frame = requestAnimationFrame(() => setSettled(true));
     return () => cancelAnimationFrame(frame);
   }, [pathname, restToActive]);
+
+  // Navigating with the menu open would otherwise leave it hanging over the
+  // page it just moved to.
+  useEffect(() => setMenuOpen(false), [pathname]);
 
   useEffect(() => {
     const onResize = () => restToActive();
@@ -85,13 +93,23 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+
   return (
     <header
       className={cn(
         "sticky top-0 z-50 transition-colors duration-200",
-        // The border and backdrop appear only once content is behind the
-        // header. At rest it is part of the page, not a bar sitting on top.
-        scrolled
+        // Border and backdrop appear only once content is behind the header.
+        // At rest it is part of the page, not a bar sitting on top.
+        scrolled || menuOpen
           ? "border-b border-edge bg-page/80 backdrop-blur-md"
           : "border-b border-transparent",
       )}
@@ -110,6 +128,7 @@ export function SiteHeader() {
         <nav
           ref={navRef}
           onMouseLeave={restToActive}
+          aria-label="Main"
           className="relative hidden items-center gap-1 sm:flex"
         >
           <span
@@ -159,8 +178,67 @@ export function SiteHeader() {
           >
             Download
           </Link>
+
+          <button
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            onClick={() => setMenuOpen((open) => !open)}
+            className={cn(
+              "flex size-9 items-center justify-center rounded-control text-ink-secondary sm:hidden",
+              "transition-colors duration-150 hover:bg-raised hover:text-ink",
+              "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+            )}
+          >
+            {/* Two bars that cross into an X. The same element changing state,
+                rather than swapping one icon for another. */}
+            <span className="relative block h-[10px] w-[16px]" aria-hidden="true">
+              <span
+                className={cn(
+                  "absolute left-0 block h-[1.5px] w-full rounded-full bg-current transition-transform duration-200",
+                  menuOpen ? "top-[4px] rotate-45" : "top-0",
+                )}
+              />
+              <span
+                className={cn(
+                  "absolute left-0 block h-[1.5px] w-full rounded-full bg-current transition-transform duration-200",
+                  menuOpen ? "top-[4px] -rotate-45" : "top-[8px]",
+                )}
+              />
+            </span>
+          </button>
         </div>
       </div>
+
+      {menuOpen ? (
+        <nav
+          id="mobile-nav"
+          aria-label="Main"
+          className="riggit-menu-in border-t border-edge px-6 pb-5 sm:hidden"
+        >
+          <ul className="flex flex-col">
+            {LINKS.map((link) => {
+              const active = pathname.startsWith(link.href);
+
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className={cn(
+                      "block border-b border-edge py-3.5 text-[15px] transition-colors duration-150",
+                      "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+                      active ? "text-ink" : "text-ink-secondary",
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      ) : null}
     </header>
   );
 }
