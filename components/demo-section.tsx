@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { BEATS, GRID } from "@/lib/patterns";
+import { BEATS, GRID, levelOpacity } from "@/lib/patterns";
 import { slotFor, useStep } from "@/lib/use-step";
 
 const CELL = 26;
@@ -103,7 +103,7 @@ export function DemoSection() {
                           height={CELL}
                           rx={7}
                           fill="var(--color-accent)"
-                          opacity={0.45 + level * 0.14}
+                          opacity={levelOpacity(level)}
                         />
                       ),
                     )}

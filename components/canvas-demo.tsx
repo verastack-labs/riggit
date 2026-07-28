@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { BEATS, GRID } from "@/lib/patterns";
+import { BEATS, GRID, levelOpacity } from "@/lib/patterns";
 import { useStep } from "@/lib/use-step";
 
 /** Chunky, so the field reads as contribution squares at arm's length rather
@@ -70,7 +70,7 @@ export function CanvasDemo() {
                           height={CELL}
                           rx={7}
                           fill="var(--color-accent)"
-                          opacity={0.4 + level * 0.15}
+                          opacity={levelOpacity(level)}
                         />
                       ),
                     )}
