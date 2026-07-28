@@ -89,12 +89,7 @@ export function CanvasDemo() {
                   <h3 className="mx-auto max-w-[20ch] text-[clamp(1.9rem,5vw,3.2rem)] leading-[1.04] font-medium tracking-[-0.035em] text-balance text-ink">
                     {beat.title}
                   </h3>
-                  {/* Balanced, not pretty. These are two or three centred
-                      lines under a heading, where an uneven rag is the thing
-                      you notice; `pretty` only tidies the last line and leaves
-                      the block lopsided. Long-form copy elsewhere keeps
-                      `pretty`, which is what it is for. */}
-                  <p className="mx-auto mt-5 max-w-[46ch] text-[16px] leading-[1.6] text-ink-secondary text-balance">
+                  <p className="mx-auto mt-5 max-w-[46ch] text-[16px] leading-[1.6] text-ink-secondary text-pretty">
                     {beat.body}
                   </p>
                 </li>
