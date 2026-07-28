@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 const WEEKS = 26;
 const DAYS = 7;
 
@@ -51,6 +53,11 @@ const LEVEL_FILL = [
  * The empty squares are the point, so they animate last and loudest. Cells
  * that were already green stay put; only the gaps light up, which is exactly
  * what the product does and reads without a caption.
+ *
+ * The per-cell delay goes out as a custom property rather than as
+ * `animation-delay` directly, because it has to time two animations: the fill,
+ * and the slow pulse that starts where the fill ends. Passing the raw number
+ * lets the stylesheet do that arithmetic instead of duplicating it here.
  */
 export function ContributionGraph() {
   const cells = [];
@@ -74,7 +81,11 @@ export function ContributionGraph() {
           rx={5}
           fill={isGap ? LEVEL_FILL[0] : LEVEL_FILL[level]}
           className={isGap ? "riggit-gap" : undefined}
-          style={isGap ? { animationDelay: `${Math.round(delay)}ms` } : undefined}
+          style={
+            isGap
+              ? ({ "--gap-delay": `${Math.round(delay)}ms` } as CSSProperties)
+              : undefined
+          }
         />,
       );
     }
