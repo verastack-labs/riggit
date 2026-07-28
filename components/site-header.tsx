@@ -141,7 +141,8 @@ export function SiteHeader() {
   }, [menuOpen, closeMenu]);
 
   return (
-    <header
+    <>
+      <header
       className={cn(
         "sticky top-0 z-50 transition-colors duration-200",
         // Border and backdrop appear only once content is behind the header.
@@ -253,19 +254,31 @@ export function SiteHeader() {
         </div>
       </div>
 
+      </header>
+
+      {/* Sibling of the header, not a child. `backdrop-filter` on the header
+          makes it the containing block for fixed descendants, so nested here
+          the sheet resolved against a 64px-tall box and collapsed to nothing. */}
       {menuMounted ? (
         <div
           id="mobile-nav"
           className={cn(
             // Fixed, so opening it floats over the page instead of pushing it
             // down. Sits under the header, which keeps the close button live.
-            "fixed inset-0 top-16 z-40 bg-page/92 backdrop-blur-xl sm:hidden",
+            //
+            // Explicit inset-x/top/bottom rather than inset-0 plus an override,
+            // and the flex container is this element rather than a child: a
+            // child using h-full needs its parent to resolve a definite height,
+            // which is what left every item stacked at the top.
+            "fixed inset-x-0 bottom-0 z-40 sm:hidden",
+            "top-[var(--header-h)] flex flex-col items-center justify-center gap-2 px-6",
+            "riggit-sheet",
             menu === "open" ? "riggit-sheet-in" : "riggit-sheet-out",
           )}
         >
           <nav
             aria-label="Main"
-            className="flex h-full flex-col items-center justify-center gap-2 px-6 pb-24"
+            className="flex w-full flex-col items-center gap-2"
           >
             {LINKS.map((link, index) => {
               const active = pathname.startsWith(link.href);
@@ -296,7 +309,6 @@ export function SiteHeader() {
           </nav>
         </div>
       ) : null}
-
-    </header>
+    </>
   );
 }
