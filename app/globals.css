@@ -159,13 +159,42 @@
   animation: riggit-page-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@keyframes riggit-menu-in {
-  from { opacity: 0; transform: translateY(-6px); }
+/* Full-screen menu.
+ *
+ * The blur sits on the layer statically and only opacity animates. Animating
+ * backdrop-filter itself is expensive and is the first thing to stutter on a
+ * phone, which is precisely where this component lives. */
+@keyframes riggit-sheet-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes riggit-sheet-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.riggit-sheet-in {
+  animation: riggit-sheet-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.riggit-sheet-out {
+  animation: riggit-sheet-out 160ms ease-in both;
+}
+
+/* Items arrive just behind the backdrop so the panel reads as one movement
+ * settling rather than a list appearing on a wall. Delays are set inline. */
+@keyframes riggit-sheet-item {
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.riggit-menu-in {
-  animation: riggit-menu-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+.riggit-sheet-item {
+  animation: riggit-sheet-item 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.riggit-sheet-out .riggit-sheet-item {
+  animation: none;
 }
 
 /* Scroll reveal. Sections start visible and settle, rather than being hidden
@@ -188,7 +217,9 @@
   .riggit-mark-hand,
   .riggit-linear-block,
   .riggit-page-in,
-  .riggit-menu-in,
+  .riggit-sheet-in,
+  .riggit-sheet-out,
+  .riggit-sheet-item,
   .riggit-reveal {
     animation: none;
   }

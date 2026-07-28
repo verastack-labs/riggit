@@ -39,7 +39,14 @@ export function SiteHeader() {
   });
   const [settled, setSettled] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menu, setMenu] = useState<"closed" | "open" | "closing">("closed");
+  const menuOpen = menu === "open";
+  const menuMounted = menu !== "closed";
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  const closeMenu = useCallback(() => {
+    setMenu((current) => (current === "open" ? "closing" : current));
+  }, []);
 
   const moveTo = useCallback((element: HTMLElement | null) => {
     const nav = navRef.current;
@@ -78,7 +85,33 @@ export function SiteHeader() {
 
   // Navigating with the menu open would otherwise leave it hanging over the
   // page it just moved to.
-  useEffect(() => setMenuOpen(false), [pathname]);
+  useEffect(() => setMenu("closed"), [pathname]);
+
+  // Held mounted through the closing animation, then removed.
+  useEffect(() => {
+    if (menu !== "closing") return;
+    const timer = setTimeout(() => setMenu("closed"), 160);
+    return () => clearTimeout(timer);
+  }, [menu]);
+
+  // The page behind must not scroll under the sheet, and must not shift when
+  // the scrollbar disappears.
+  useEffect(() => {
+    if (!menuMounted) return;
+
+    const root = document.documentElement;
+    const gutter = window.innerWidth - root.clientWidth;
+    const previousOverflow = root.style.overflow;
+    const previousPadding = root.style.paddingRight;
+
+    root.style.overflow = "hidden";
+    if (gutter > 0) root.style.paddingRight = `${gutter}px`;
+
+    return () => {
+      root.style.overflow = previousOverflow;
+      root.style.paddingRight = previousPadding;
+    };
+  }, [menuMounted]);
 
   useEffect(() => {
     const onResize = () => restToActive();
@@ -97,11 +130,15 @@ export function SiteHeader() {
     if (!menuOpen) return;
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
+      if (event.key !== "Escape") return;
+      closeMenu();
+      // Focus goes back where it came from, or it lands on the body and the
+      // next Tab restarts from the top of the page.
+      menuButtonRef.current?.focus();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [menuOpen]);
+  }, [menuOpen, closeMenu]);
 
   return (
     <header
@@ -109,7 +146,7 @@ export function SiteHeader() {
         "sticky top-0 z-50 transition-colors duration-200",
         // Border and backdrop appear only once content is behind the header.
         // At rest it is part of the page, not a bar sitting on top.
-        scrolled || menuOpen
+        scrolled || menuMounted
           ? "border-b border-edge bg-page/80 backdrop-blur-md"
           : "border-b border-transparent",
       )}
@@ -174,6 +211,8 @@ export function SiteHeader() {
               "rounded-field bg-accent px-4 py-2 text-[13px] font-medium text-accent-ink",
               "transition-colors duration-150 hover:bg-accent-bright",
               "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+              // The sheet carries its own, larger. Two at once reads as a bug.
+              menuMounted && "max-sm:hidden",
             )}
           >
             Download
@@ -184,7 +223,10 @@ export function SiteHeader() {
             aria-expanded={menuOpen}
             aria-controls="mobile-nav"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
-            onClick={() => setMenuOpen((open) => !open)}
+            ref={menuButtonRef}
+            onClick={() =>
+              setMenu((current) => (current === "open" ? "closing" : "open"))
+            }
             className={cn(
               "flex size-9 items-center justify-center rounded-control text-ink-secondary sm:hidden",
               "transition-colors duration-150 hover:bg-raised hover:text-ink",
@@ -211,34 +253,50 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {menuOpen ? (
-        <nav
+      {menuMounted ? (
+        <div
           id="mobile-nav"
-          aria-label="Main"
-          className="riggit-menu-in border-t border-edge px-6 pb-5 sm:hidden"
+          className={cn(
+            // Fixed, so opening it floats over the page instead of pushing it
+            // down. Sits under the header, which keeps the close button live.
+            "fixed inset-0 top-16 z-40 bg-page/92 backdrop-blur-xl sm:hidden",
+            menu === "open" ? "riggit-sheet-in" : "riggit-sheet-out",
+          )}
         >
-          <ul className="flex flex-col">
-            {LINKS.map((link) => {
+          <nav
+            aria-label="Main"
+            className="flex h-full flex-col items-center justify-center gap-2 px-6 pb-24"
+          >
+            {LINKS.map((link, index) => {
               const active = pathname.startsWith(link.href);
 
               return (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className={cn(
-                      "block border-b border-edge py-3.5 text-[15px] transition-colors duration-150",
-                      "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-                      active ? "text-ink" : "text-ink-secondary",
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "riggit-sheet-item rounded-control px-6 py-3 text-[30px] leading-tight font-medium tracking-[-0.03em] transition-colors duration-150",
+                    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+                    active ? "text-ink" : "text-ink-secondary",
+                  )}
+                  style={{ animationDelay: `${60 + index * 45}ms` }}
+                >
+                  {link.label}
+                </Link>
               );
             })}
-          </ul>
-        </nav>
+
+            <Link
+              href="/download"
+              className="riggit-sheet-item mt-6 rounded-field bg-accent px-8 py-3.5 text-[15px] font-medium text-accent-ink transition-colors duration-150 hover:bg-accent-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              style={{ animationDelay: `${60 + LINKS.length * 45}ms` }}
+            >
+              Download
+            </Link>
+          </nav>
+        </div>
       ) : null}
+
     </header>
   );
 }
