@@ -44,6 +44,11 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
+  /* Layout constants the demo derives its geometry from. */
+  --header-h: 4rem;
+  --demo-beats: 5;
+  --slot: 8.5rem;
+
   /* Motion */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-fast: 150ms;
@@ -238,101 +243,136 @@
 
 /* The scrolling demo.
  *
- * A named scroll timeline on the section, referenced by descendants. Each of
- * the four grid layers is opaque for one quarter of the scroll and crossfades
- * with its neighbours, so the grid appears to rearrange rather than to swap.
+ * A named scroll timeline on the section. Every animated element declares its
+ * own window with --from and --to, set inline from its index, so one rule
+ * serves every layer and every beat.
  *
- * `--layer` is set inline per layer and shifts that window along, which keeps
- * one rule serving all four instead of four near-identical rules.
+ * The earlier version tried to offset layers with a percentage
+ * animation-delay. That property only takes time values, so the declaration
+ * was invalid and every layer sat at the same point: the grid never changed.
+ * On a scroll timeline the window is animation-range, not a delay.
  *
- * Everything here is inside @supports. Without scroll timelines the last beat
- * shows and the copy reads as an ordinary column: the section still makes its
- * point, it just stops performing it. */
+ * Everything is inside @supports. Without scroll timelines the last beat and
+ * the first copy block show statically and the section reads as an ordinary
+ * column. It must never depend on the effect to make sense. */
+
+.riggit-demo-track {
+  /* One screen of hold per beat, plus one for the lead in and out. */
+  height: calc(var(--demo-beats) * 100vh);
+}
+
+.riggit-demo-stage {
+  position: sticky;
+  /* Centred in what is left below the header, so the middle copy slot and the
+   * middle of the grid sit on the same horizontal line. */
+  top: var(--header-h);
+  display: flex;
+  height: calc(100vh - var(--header-h));
+  justify-content: center;
+}
+
+.riggit-demo-slots {
+  height: 100%;
+  min-height: 22rem;
+}
+
+.riggit-demo-beat {
+  /* Positioned from its own centre, so "centre slot" means centre. */
+  transform: translateY(-50%);
+}
 
 .riggit-demo-layer {
   opacity: 0;
 }
 
-/* The final beat is the resting state, so a browser with no scroll timelines
- * still lands on "the graph tells the truth" rather than on a blank panel. */
+/* Resting state without scroll timelines: the final pattern and the opening
+ * copy, so an unsupported browser lands on something coherent. */
 .riggit-demo-layer:last-child {
   opacity: 1;
+}
+
+.riggit-demo-beat:first-child {
+  opacity: 1;
+}
+
+.riggit-demo-beat:not(:first-child) {
+  opacity: 0;
 }
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .riggit-demo {
-      view-timeline-name: --demo;
-      view-timeline-axis: block;
       timeline-scope: --demo;
     }
 
-    @keyframes riggit-demo-layer {
-      0%,
-      6% {
-        opacity: 0;
-      }
-      12%,
-      19% {
-        opacity: 1;
-      }
-      25% {
-        opacity: 0;
-      }
-      100% {
-        opacity: 0;
-      }
+    .riggit-demo-track {
+      scroll-timeline-name: --demo;
+      scroll-timeline-axis: block;
     }
 
-    .riggit-demo-layer {
-      animation: riggit-demo-layer linear both;
-      animation-timeline: --demo;
-      animation-range: cover 0% cover 100%;
-      /* Each layer owns a quarter of the timeline. Negative delay on a
-       * scroll timeline shifts the window rather than waiting. */
-      animation-delay: calc(var(--layer) * -25%);
-    }
-
-    /* The last layer has nothing following it, so it holds instead of fading
-     * back out and leaving an empty panel at the end of the section. */
-    .riggit-demo-layer:last-child {
-      animation-name: riggit-demo-layer-final;
-    }
-
-    @keyframes riggit-demo-layer-final {
-      0%,
-      6% {
-        opacity: 0;
-      }
-      12%,
-      100% {
-        opacity: 1;
-      }
-    }
-
-    /* Copy dims as it leaves the middle of the viewport, so attention sits
-     * where the grid is currently pointing. Opacity and a small lift rather
-     * than blur: animated blur is the first thing to drop frames. */
+    /* Three slots. An item is nothing, then dim below, then primary at the
+     * centre, then dim above, then nothing. Long plateaus and short moves are
+     * what make it read as stepping rather than drifting. */
     @keyframes riggit-demo-beat {
       0% {
-        opacity: 0.15;
-        transform: translateY(12px);
+        opacity: 0;
+        transform: translateY(calc(-50% + var(--slot))) scale(0.97);
       }
-      35%,
-      65% {
+      9% {
+        opacity: 0.34;
+        transform: translateY(calc(-50% + var(--slot))) scale(0.97);
+      }
+      34% {
+        opacity: 0.34;
+        transform: translateY(calc(-50% + var(--slot))) scale(0.97);
+      }
+      43%,
+      57% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(-50%) scale(1);
+      }
+      66% {
+        opacity: 0.34;
+        transform: translateY(calc(-50% - var(--slot))) scale(0.97);
+      }
+      91% {
+        opacity: 0.34;
+        transform: translateY(calc(-50% - var(--slot))) scale(0.97);
       }
       100% {
-        opacity: 0.15;
-        transform: translateY(-12px);
+        opacity: 0;
+        transform: translateY(calc(-50% - var(--slot))) scale(0.97);
       }
     }
 
-    .riggit-demo-beat {
+    .riggit-demo-beat,
+    .riggit-demo-beat:first-child,
+    .riggit-demo-beat:not(:first-child) {
       animation: riggit-demo-beat linear both;
-      animation-timeline: view();
-      animation-range: cover 0% cover 100%;
+      animation-timeline: --demo;
+      animation-range: var(--from) var(--to);
+    }
+
+    /* The grid crossfades on the same windows, so a pattern is fully itself
+     * exactly while its copy holds the centre slot. */
+    @keyframes riggit-demo-layer {
+      0% {
+        opacity: 0;
+      }
+      34%,
+      66% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .riggit-demo-layer,
+    .riggit-demo-layer:last-child {
+      animation: riggit-demo-layer linear both;
+      animation-timeline: --demo;
+      animation-range: var(--from) var(--to);
     }
   }
 }
