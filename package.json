@@ -7,6 +7,7 @@
     "dev": "next dev",
     "build": "cross-env NEXT_DIST_DIR=.next-build next build",
     "start": "next start",
+    "icons": "node scripts/generate-icons.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "build:dev-dir": "next build"
@@ -25,6 +26,7 @@
     "cross-env": "^10.1.0",
     "eslint": "^9.35.0",
     "eslint-config-next": "^15.5.4",
+    "sharp": "^0.35.3",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2"
   }
