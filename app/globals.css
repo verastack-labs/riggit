@@ -47,7 +47,7 @@
   /* Layout constants the demo derives its geometry from. */
   --header-h: 4rem;
   --demo-beats: 4;
-  --slot: 8.5rem;
+  --slot: 12.5rem;
 
   /* Motion */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
@@ -283,6 +283,7 @@
 /* Three slots and two exits. An item is centred, dimmed above, dimmed below,
  * or gone; never anywhere between. */
 .riggit-demo-beat {
+  transform-origin: center;
   transition:
     opacity var(--duration-slow) var(--ease-standard),
     transform var(--duration-slow) var(--ease-standard);
@@ -294,23 +295,23 @@
 }
 
 .riggit-demo-beat[data-slot="above"] {
-  opacity: 0.34;
-  transform: translateY(calc(-50% - var(--slot))) scale(0.97);
+  opacity: 0.3;
+  transform: translateY(calc(-50% - var(--slot))) scale(0.9);
 }
 
 .riggit-demo-beat[data-slot="below"] {
-  opacity: 0.34;
-  transform: translateY(calc(-50% + var(--slot))) scale(0.97);
+  opacity: 0.3;
+  transform: translateY(calc(-50% + var(--slot))) scale(0.9);
 }
 
 .riggit-demo-beat[data-slot="gone-above"] {
   opacity: 0;
-  transform: translateY(calc(-50% - var(--slot) * 2)) scale(0.97);
+  transform: translateY(calc(-50% - var(--slot) * 1.7)) scale(0.86);
 }
 
 .riggit-demo-beat[data-slot="gone-below"] {
   opacity: 0;
-  transform: translateY(calc(-50% + var(--slot) * 2)) scale(0.97);
+  transform: translateY(calc(-50% + var(--slot) * 1.7)) scale(0.86);
 }
 
 /* Patterns sit over a base grid that is never hidden, so only the lit cells
@@ -344,7 +345,7 @@
 
 .riggit-canvas-beat {
   opacity: 0;
-  transform: translateY(calc(-50% + 1.25rem));
+  transform: translateY(1.25rem);
   transition:
     opacity var(--duration-slow) var(--ease-standard),
     transform var(--duration-slow) var(--ease-standard);
@@ -352,7 +353,14 @@
 
 .riggit-canvas-beat[data-active="true"] {
   opacity: 1;
-  transform: translateY(-50%);
+  transform: translateY(0);
+}
+
+/* The shape sits above the copy rather than behind it. Bright accent cells
+ * directly under text destroyed its contrast, and no amount of scrim fixes
+ * that without putting the panel back that this variation exists to remove. */
+.riggit-canvas-shape {
+  filter: drop-shadow(0 0 28px rgb(53 208 140 / 0.18));
 }
 
 @media (prefers-reduced-motion: reduce) {
