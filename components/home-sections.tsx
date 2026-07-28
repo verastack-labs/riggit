@@ -37,22 +37,22 @@ export function ProblemSection() {
   return (
     <section
       aria-labelledby="problem-heading"
-      className="riggit-reveal mx-auto max-w-[1080px] px-6 pt-28 sm:pt-36"
+      className="riggit-reveal mx-auto max-w-[1080px] px-6 pt-32 sm:pt-44"
     >
-      <div className="max-w-[34ch]">
+      <div>
         <h2
           id="problem-heading"
-          className="text-[clamp(1.75rem,4vw,2.6rem)] leading-[1.05] font-medium tracking-[-0.03em] text-balance text-ink"
+          className="max-w-[16ch] text-[clamp(2rem,5vw,3.2rem)] leading-[1.02] font-medium tracking-[-0.035em] text-balance text-ink"
         >
           Your GitHub does not tell the real story.
         </h2>
       </div>
 
-      <ul className="mt-14 flex flex-col">
+      <ul className="mt-16 flex flex-col">
         {SCENARIOS.map((scenario) => (
           <li
             key={scenario.title}
-            className="flex flex-col gap-4 border-t border-edge py-8 sm:flex-row sm:items-baseline sm:gap-10"
+            className="flex flex-col gap-5 border-t border-edge py-11 sm:flex-row sm:items-baseline sm:gap-12"
           >
             <GapStrip
               gapStart={scenario.gapStart}
@@ -60,10 +60,10 @@ export function ProblemSection() {
               seed={scenario.seed}
             />
             <div className="sm:flex-1">
-              <h3 className="text-[16px] font-medium tracking-[-0.01em] text-ink">
+              <h3 className="text-[19px] font-medium tracking-[-0.015em] text-ink">
                 {scenario.title}
               </h3>
-              <p className="mt-2 max-w-[52ch] text-[15.5px] leading-[1.6] text-ink-secondary">
+              <p className="mt-2.5 max-w-[54ch] text-[15.5px] leading-[1.65] text-ink-secondary text-pretty">
                 {scenario.body}
               </p>
             </div>

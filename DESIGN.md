@@ -40,6 +40,11 @@ typography:
     fontSize: "clamp(2rem, 5vw, 3.2rem)"
     fontWeight: 500
     letterSpacing: "-0.03em"
+  row-title:
+    fontFamily: "var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif"
+    fontSize: "19px"
+    fontWeight: 500
+    letterSpacing: "-0.015em"
   lead:
     fontFamily: "var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif"
     fontSize: "16.5px"
@@ -177,6 +182,7 @@ The typeface also differs on purpose: the app uses the OS system stack, the site
 |---|---|---|
 | Display | `clamp(2.6rem, 7vw, 4.75rem)`, 500, -0.035em | The hero headline, once per site |
 | Page title | `clamp(2rem, 5vw, 3.2rem)`, 500, -0.03em | The h1 on every other route |
+| Row title | 19px, 500, -0.015em | The heading of an item in a list, where a section heading would be too loud and body copy too quiet |
 | Lead | 16.5px, 400 | The paragraph directly under a headline |
 | Body | 15.5px, 400 | Running copy |
 | Nav sheet | 30px, 500, -0.03em | Links in the full-screen mobile menu, where the row becomes the whole page |
