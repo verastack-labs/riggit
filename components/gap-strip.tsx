@@ -1,4 +1,4 @@
-const WEEKS = 14;
+const WEEKS = 12;
 
 function noise(week: number, seed: number): number {
   const n = Math.sin(week * 41.31 + seed * 17.77) * 21323.113;
@@ -32,8 +32,8 @@ export function GapStrip({
 }) {
   return (
     <svg
-      viewBox={`0 0 ${WEEKS * 13 - 3} 10`}
-      className="h-[10px] w-auto shrink-0"
+      viewBox={`0 0 ${WEEKS * 20 - 4} 16`}
+      className="h-4 w-auto shrink-0"
       aria-hidden="true"
     >
       {Array.from({ length: WEEKS }, (_, week) => {
@@ -44,11 +44,11 @@ export function GapStrip({
         return (
           <rect
             key={week}
-            x={week * 13}
+            x={week * 20}
             y={0}
-            width={10}
-            height={10}
-            rx={2.5}
+            width={16}
+            height={16}
+            rx={4}
             fill={FILL[level]}
           />
         );
