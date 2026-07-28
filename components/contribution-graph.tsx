@@ -40,7 +40,7 @@ function restingLevel(week: number, day: number): number {
 }
 
 const LEVEL_FILL = [
-  "var(--color-panel)",
+  "var(--color-empty-cell)",
   "var(--color-accent-dim)",
   "#1e5c41",
   "#2aa06c",
@@ -50,14 +50,14 @@ const LEVEL_FILL = [
 /**
  * The hero: a contribution graph filling in its own gaps.
  *
- * The empty squares are the point, so they animate last and loudest. Cells
+ * The empty squares are the point, so they are the only ones that move. Cells
  * that were already green stay put; only the gaps light up, which is exactly
  * what the product does and reads without a caption.
  *
- * The per-cell delay goes out as a custom property rather than as
- * `animation-delay` directly, because it has to time two animations: the fill,
- * and the slow pulse that starts where the fill ends. Passing the raw number
- * lets the stylesheet do that arithmetic instead of duplicating it here.
+ * It runs on a loop rather than once, so the argument is still being made to
+ * someone who arrives ten seconds late, and so the before state is something
+ * they see rather than something they have to imagine. The timing lives in the
+ * stylesheet; what this file owns is the sweep order.
  */
 export function ContributionGraph() {
   const cells = [];
@@ -69,7 +69,18 @@ export function ContributionGraph() {
 
       // Filled left to right so it reads as time passing rather than as a
       // random sparkle.
-      const delay = 900 + week * 78 + noise(day, week) * 260;
+      //
+      // The spread across the whole grid is what bounds the loop's timing: the
+      // graph is only wholly empty for the part of the empty hold that the
+      // sweep is not still eating into. At 78ms a week the spread swallowed
+      // the entire hold and the drained state never actually appeared, so the
+      // step is tighter now and the jitter smaller with it.
+      //
+      // The 500ms head start is deliberate: on arrival the graph is briefly
+      // broken, and only then repairs itself, which is the order the argument
+      // is in. It also sets the phase of the light behind the hero, so if it
+      // changes here it has to change on `.riggit-hero-lift` too.
+      const delay = 500 + week * 46 + noise(day, week) * 180;
 
       cells.push(
         <rect
@@ -96,7 +107,7 @@ export function ContributionGraph() {
       viewBox={`0 0 ${WEEKS * 22 - 5} ${DAYS * 22 - 5}`}
       className="w-full"
       role="img"
-      aria-label="A GitHub contribution graph with gaps in it, filling in until the year is unbroken"
+      aria-label="A GitHub contribution graph of the last six months, its empty days filling in until the run is unbroken"
     >
       {cells}
     </svg>

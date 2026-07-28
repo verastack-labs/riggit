@@ -24,12 +24,23 @@ export default function Home() {
           unrelated boxes, and the graph, which is the whole argument, ends up
           dressed exactly like the pricing panel further down.
 
-          `isolate` keeps the wash's negative z-index inside this subtree, well
-          clear of the sticky header. */}
-      <div className="relative isolate">
+          `isolate` keeps the light's negative z-index inside this subtree, well
+          clear of the sticky header.
+
+          `overflow-x-clip` is load-bearing, not tidiness. The layers below are
+          full width and animate `transform`, so scaling or translating them
+          pushes past the viewport and raises a horizontal scrollbar that comes
+          and goes on the animation's own cycle. Clip rather than hidden, so
+          the vertical axis stays visible instead of becoming a scroll
+          container. */}
+      <div className="relative isolate overflow-x-clip">
         <div
           aria-hidden="true"
-          className="riggit-hero-glow pointer-events-none absolute inset-x-0 top-0 -z-10 h-[680px] origin-[50%_14%] sm:h-[880px]"
+          className="riggit-hero-lift pointer-events-none absolute inset-x-0 top-0 -z-10 h-[680px] sm:h-[880px]"
+        />
+        <div
+          aria-hidden="true"
+          className="riggit-hero-drift pointer-events-none absolute inset-x-0 top-0 -z-10 h-[680px] sm:h-[880px]"
         />
 
         <section className="mx-auto max-w-[1080px] px-6 pt-24 pb-16 sm:pt-36">
@@ -50,7 +61,10 @@ export default function Home() {
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/download"
-                className="rounded-field bg-accent px-6 py-3 text-sm font-medium text-accent-ink transition-colors duration-150 hover:bg-accent-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                /* The only button on the site carrying a glow. It sits inside
+                   the lit area, and an unlit control in a lit room reads as
+                   pasted on. Everywhere else the same button stays flat. */
+                className="rounded-field bg-accent px-6 py-3 text-sm font-medium text-accent-ink shadow-[0_0_34px_-10px_var(--color-accent)] transition-colors duration-150 hover:bg-accent-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 Download for free
               </Link>
