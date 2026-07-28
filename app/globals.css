@@ -241,33 +241,37 @@
   }
 }
 
-/* The scrolling demo.
+/* The two demo sections.
  *
- * A named scroll timeline on the section. Every animated element declares its
- * own window with --from and --to, set inline from its index, so one rule
- * serves every layer and every beat.
+ * Both are stepped, not scrubbed. A hook quantises scroll into a step index
+ * and writes it onto each element; everything below is a plain CSS transition,
+ * so the section is only ever in one of its defined states and the movement
+ * between them runs on its own timing rather than the reader's scroll speed.
  *
- * The earlier version tried to offset layers with a percentage
- * animation-delay. That property only takes time values, so the declaration
- * was invalid and every layer sat at the same point: the grid never changed.
- * On a scroll timeline the window is animation-range, not a delay.
- *
- * Everything is inside @supports. Without scroll timelines the last beat and
- * the first copy block show statically and the section reads as an ordinary
- * column. It must never depend on the effect to make sense. */
+ * Scroll-driven animation was tried for this first. It is the wrong tool by
+ * construction: it maps scroll straight onto progress, which is exactly the
+ * "stranded halfway" behaviour being avoided. */
 
-.riggit-demo-track {
-  /* One screen of hold per beat, plus one for the lead in and out. */
+.riggit-demo-track,
+.riggit-canvas-track {
   height: calc(var(--demo-beats) * 100vh);
 }
 
-.riggit-demo-stage {
+.riggit-demo-stage,
+.riggit-canvas-stage {
   position: sticky;
   /* Centred in what is left below the header, so the middle copy slot and the
    * middle of the grid sit on the same horizontal line. */
   top: var(--header-h);
-  display: flex;
   height: calc(100vh - var(--header-h));
+}
+
+.riggit-canvas-stage {
+  overflow: hidden;
+}
+
+.riggit-demo-stage {
+  display: flex;
   justify-content: center;
 }
 
@@ -276,213 +280,86 @@
   min-height: 22rem;
 }
 
+/* Three slots and two exits. An item is centred, dimmed above, dimmed below,
+ * or gone; never anywhere between. */
 .riggit-demo-beat {
-  /* Positioned from its own centre, so "centre slot" means centre. */
-  transform: translateY(-50%);
+  transition:
+    opacity var(--duration-slow) var(--ease-standard),
+    transform var(--duration-slow) var(--ease-standard);
 }
 
-.riggit-demo-layer {
+.riggit-demo-beat[data-slot="primary"] {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+.riggit-demo-beat[data-slot="above"] {
+  opacity: 0.34;
+  transform: translateY(calc(-50% - var(--slot))) scale(0.97);
+}
+
+.riggit-demo-beat[data-slot="below"] {
+  opacity: 0.34;
+  transform: translateY(calc(-50% + var(--slot))) scale(0.97);
+}
+
+.riggit-demo-beat[data-slot="gone-above"] {
   opacity: 0;
+  transform: translateY(calc(-50% - var(--slot) * 2)) scale(0.97);
 }
 
-/* Resting state without scroll timelines: the final pattern and the opening
- * copy, so an unsupported browser lands on something coherent. */
-.riggit-demo-layer:last-child {
+.riggit-demo-beat[data-slot="gone-below"] {
+  opacity: 0;
+  transform: translateY(calc(-50% + var(--slot) * 2)) scale(0.97);
+}
+
+/* Patterns sit over a base grid that is never hidden, so only the lit cells
+ * fade in and out. */
+.riggit-demo-layer,
+.riggit-canvas-layer {
+  opacity: 0;
+  transition: opacity var(--duration-slow) var(--ease-standard);
+}
+
+.riggit-demo-layer[data-active="true"],
+.riggit-canvas-layer[data-active="true"] {
   opacity: 1;
 }
 
-.riggit-demo-beat:first-child {
-  opacity: 1;
-}
-
-.riggit-demo-beat:not(:first-child) {
-  opacity: 0;
-}
-
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    /* view-timeline, not scroll-timeline. scroll-timeline builds a timeline
-     * from the element's own scrollport, and the track is not a scroll
-     * container, so the name never resolved and every animation sat inactive.
-     * view-timeline tracks the element's progress through the viewport, which
-     * is what a pinned section actually needs.
-     *
-     * No timeline-scope: everything that uses the name is a descendant of the
-     * element that declares it. */
-    .riggit-demo-track {
-      view-timeline-name: --demo;
-      view-timeline-axis: block;
-    }
-
-    /* Three slots. An item is nothing, then dim below, then primary at the
-     * centre, then dim above, then nothing. Long plateaus and short moves are
-     * what make it read as stepping rather than drifting. */
-    /* Long holds, short moves. The plateau is on primary, which is what makes
-     * a beat feel like it stops rather than passes through. Opacity, position
-     * and scale all move on the same span, so one change reads as one event. */
-    @keyframes riggit-demo-beat {
-      0% {
-        opacity: 0;
-        transform: translateY(calc(-50% + var(--slot))) scale(0.97);
-      }
-      12%,
-      36% {
-        opacity: 0.34;
-        transform: translateY(calc(-50% + var(--slot))) scale(0.97);
-      }
-      44%,
-      56% {
-        opacity: 1;
-        transform: translateY(-50%) scale(1);
-      }
-      64%,
-      88% {
-        opacity: 0.34;
-        transform: translateY(calc(-50% - var(--slot))) scale(0.97);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(calc(-50% - var(--slot))) scale(0.97);
-      }
-    }
-
-    .riggit-demo-beat,
-    .riggit-demo-beat:first-child,
-    .riggit-demo-beat:not(:first-child) {
-      animation: riggit-demo-beat linear both;
-      animation-timeline: --demo;
-      animation-range: contain var(--from) contain var(--to);
-    }
-
-    /* The grid crossfades on the same windows, so a pattern is fully itself
-     * exactly while its copy holds the centre slot. */
-    /* Each pattern is fully itself exactly while its copy holds the centre,
-     * and crossfades with its neighbours in between. */
-    @keyframes riggit-demo-layer {
-      0%,
-      28% {
-        opacity: 0;
-      }
-      44%,
-      56% {
-        opacity: 1;
-      }
-      72%,
-      100% {
-        opacity: 0;
-      }
-    }
-
-    .riggit-demo-layer,
-    .riggit-demo-layer:last-child {
-      animation: riggit-demo-layer linear both;
-      animation-timeline: --demo;
-      animation-range: contain var(--from) contain var(--to);
-    }
-  }
-}
-
-/* Variation: the grid as the page rather than as a panel.
- *
- * Same timing model as the panel demo, so the two can be compared on their
- * composition rather than on their pacing. */
-
-.riggit-canvas-track {
-  height: calc(var(--demo-beats) * 100vh);
-}
-
-.riggit-canvas-stage {
-  position: sticky;
-  top: var(--header-h);
-  height: calc(100vh - var(--header-h));
-  overflow: hidden;
+/* The full-bleed field. A tiled background rather than a fixed cell count, so
+ * it covers any viewport and is always cut off by the edges. */
+.riggit-canvas-field {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34'%3E%3Crect width='26' height='26' rx='7' fill='%23141a16'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: repeat;
 }
 
 .riggit-canvas-vignette {
-  background:
-    radial-gradient(
-      ellipse at center,
-      transparent 38%,
-      var(--color-page) 78%
-    );
-}
-
-.riggit-canvas-layer {
-  opacity: 0;
-}
-
-.riggit-canvas-layer:last-child {
-  opacity: 1;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 34%,
+    var(--color-page) 82%
+  );
 }
 
 .riggit-canvas-beat {
+  opacity: 0;
+  transform: translateY(calc(-50% + 1.25rem));
+  transition:
+    opacity var(--duration-slow) var(--ease-standard),
+    transform var(--duration-slow) var(--ease-standard);
+}
+
+.riggit-canvas-beat[data-active="true"] {
+  opacity: 1;
   transform: translateY(-50%);
 }
 
-.riggit-canvas-beat:first-child {
-  opacity: 1;
-}
-
-.riggit-canvas-beat:not(:first-child) {
-  opacity: 0;
-}
-
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .riggit-canvas-track {
-      view-timeline-name: --canvas;
-      view-timeline-axis: block;
-    }
-
-    /* Copy crossfades in place rather than stepping through slots. Over a
-     * full-bleed field there is no column for items to travel along, and a
-     * single centred statement is what lets the field stay the subject. */
-    @keyframes riggit-canvas-beat {
-      0%,
-      30% {
-        opacity: 0;
-        transform: translateY(calc(-50% + 1.25rem));
-      }
-      44%,
-      56% {
-        opacity: 1;
-        transform: translateY(-50%);
-      }
-      70%,
-      100% {
-        opacity: 0;
-        transform: translateY(calc(-50% - 1.25rem));
-      }
-    }
-
-    .riggit-canvas-beat,
-    .riggit-canvas-beat:first-child,
-    .riggit-canvas-beat:not(:first-child) {
-      animation: riggit-canvas-beat linear both;
-      animation-timeline: --canvas;
-      animation-range: contain var(--from) contain var(--to);
-    }
-
-    @keyframes riggit-canvas-layer {
-      0%,
-      28% {
-        opacity: 0;
-      }
-      44%,
-      56% {
-        opacity: 1;
-      }
-      72%,
-      100% {
-        opacity: 0;
-      }
-    }
-
-    .riggit-canvas-layer,
-    .riggit-canvas-layer:last-child {
-      animation: riggit-canvas-layer linear both;
-      animation-timeline: --canvas;
-      animation-range: contain var(--from) contain var(--to);
-    }
+@media (prefers-reduced-motion: reduce) {
+  .riggit-demo-beat,
+  .riggit-demo-layer,
+  .riggit-canvas-beat,
+  .riggit-canvas-layer {
+    transition: none;
   }
 }
