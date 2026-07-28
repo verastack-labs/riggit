@@ -1,6 +1,6 @@
 ---
 name: Riggit
-description: Commit at any date and time — own your GitHub timeline.
+description: Commit at any date and time. Own your GitHub timeline.
 colors:
   page-bg: "#0A0B0A"
   sidebar-bg: "#0E100E"
@@ -103,68 +103,68 @@ components:
 
 # Design System: Riggit
 
+## How this document is structured
+
+Riggit has two design surfaces and they are not the same job. The app is an **Operate** surface where someone completes a task; this site is a **Persuade** surface where someone decides. A single rulebook serving both produces either a shouty app or a timid landing page.
+
+So the system is split:
+
+- **Foundations** live in `docs/design-foundations.md` in riggit-internal and are canonical: colour, shape, elevation, motion principles, the brand mark. Those sections are mirrored below because the design detector needs a machine-readable block next to the code it checks. **Change them at the source first**, then propagate.
+- **Everything else in this file is specific to the website** and is owned here. The type scale, layout and components below have no bearing on the app.
+
+Sections are tagged `[shared]` or `[site]` accordingly.
+
 ## Overview
 
 **Creative North Star: "The Quiet Terminal"**
 
-Riggit's UI is built to disappear into the work. It borrows the register of Arc, Linear, and Raycast — near-black surfaces, a single restrained accent, tight radii — rather than the workshop density of GitHub Desktop or Sourcetree. This isn't a Git client with panels and diffs; it's one focused action (commit, at any date) presented with enough calm that the user trusts it immediately. The app should feel worth paying for within five seconds of opening it, per the product's own principle — that means no visual noise competing with the commit form itself.
+Riggit's UI is built to disappear into the work. It borrows the register of Arc, Linear, and Raycast (near-black surfaces, a single restrained accent, tight radii) rather than the workshop density of GitHub Desktop or Sourcetree. This isn't a Git client with panels and diffs; it's one focused action (commit, at any date) presented with enough calm that the user trusts it immediately. The app should feel worth paying for within five seconds of opening it, per the product's own principle, which means no visual noise competing with the commit form itself.
 
 This direction was chosen after comparison against three alternates (glassmorphic, neo-brutalist, minimal) built during design exploration. Established won because it best matches the "quiet, confident tool" register the product needs, and because a loud or maximalist surface would work against a product whose entire value proposition depends on the user trusting it immediately.
 
 **Key Characteristics:**
 
 - Near-black surfaces stepped in three tones (page, sidebar, panel/input), never pure black
-- One accent color only — a refined emerald, not GitHub's raw contribution-graph green
+- One accent color only, a refined emerald, not GitHub's raw contribution-graph green
 - Tight 8–12px radii on controls and cards; full pills only for status chips and badges
 - Uppercase, letter-spaced micro-labels do the section-labeling work instead of borders or dividers
-- Dark-first is a firm constraint, not a default — no light mode ships in V1 (see Do's and Don'ts)
+- Dark-first is a firm constraint, not a default. No light mode ships in V1 (see Do's and Don'ts)
 
-## Colors
+## Colors [shared]
 
-A near-monochrome dark palette with a single accent carrying all emphasis — a Restrained color strategy, not a full palette or drenched surface.
+A near-monochrome dark palette with a single accent carrying all emphasis: a Restrained color strategy, not a full palette or drenched surface.
 
 ### Primary
 
 - **Page black** (`#0A0B0A`): the base app window background.
 - **Sidebar black** (`#0E100E`): one step lighter than page black, separates the repo/nav rail from the main panel without a visible border doing all the work.
-- **Panel/input black** (`#12140F` / `#171A18`): cards, text inputs, modals — the surface directly under interactive content.
+- **Panel/input black** (`#12140F` / `#171A18`): cards, text inputs, modals. The surface directly under interactive content.
 
 ### Accent
 
-- **Signal emerald** (`#35D08C`): the only saturated color in the system. Used for the commit button fill, active toggle states, trial progress fill, and the brand mark. Deliberately not GitHub's raw `#39D353` — desaturated slightly for a premium register rather than a literal graph-green callback.
+- **Signal emerald** (`#35D08C`): the only saturated color in the system. Used for the commit button fill, active toggle states, trial progress fill, and the brand mark. Deliberately not GitHub's raw `#39D353`, desaturated slightly for a premium register rather than a literal graph-green callback.
 - **Emerald dim** (`#173324` bg / `#3FD992` text): the tinted-background pairing used for avatar circles, the brand mark, and any small badge that needs the accent without full saturation.
 
 ### Neutral
 
 - **Primary text** (`#EEF0EC`): headings, active state labels, primary content.
-- **Secondary text** (`#A6ACA3`): supporting text — chip labels, identity email, field values.
+- **Secondary text** (`#A6ACA3`): supporting text: chip labels, identity email, field values.
 - **Muted text** (`#5F665F`): section labels, placeholder text, disabled/inactive states.
 - **Border** (`#23261F`): the only border color in the system at rest.
 
 ### Named Rules
 
-**The One Accent Rule.** Emerald appears in exactly one saturation across the entire app — no lighter/darker variant is introduced for a second meaning. If a second signal color is ever needed (error, warning), it must be a genuinely different hue, never a shade of the accent.
+**The One Accent Rule.** Emerald appears in exactly one saturation across the entire app. No lighter or darker variant is introduced for a second meaning. If a second signal color is ever needed (error, warning), it must be a genuinely different hue, never a shade of the accent.
 
-## Typography
+## Typography [site]
 
-**Display/Body Font:** `-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif` — the OS-native system stack.
+**Display/Body Font:** `-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`, the OS-native system stack.
 
-**Character:** Quiet and functional. This is an Operate-mode surface (a tool that gets used, not read or persuaded by), so the system stack is the honest choice — the same reasoning Linear and Raycast apply. A custom display face is worth revisiting once the brand has marketing surfaces (the landing page) that actually need a voice; the app itself does not.
+**Character:** Quiet and functional. This is an Operate-mode surface (a tool that gets used, not read or persuaded by), so the system stack is the honest choice, the same reasoning Linear and Raycast apply. A custom display face is worth revisiting once the brand has marketing surfaces (the landing page) that actually need a voice; the app itself does not.
 
-### Hierarchy
+### Scale
 
-- **Title** (500, 18px, -0.01em): screen/repo title in the top bar.
-- **Body** (400/500, 13–14.5px): field values, commit message text, settings rows.
-- **Label** (600, 10.5px, +0.09em, uppercase): section headers ("REPOSITORIES", "COMMIT MESSAGE") and field labels ("DATE", "TIME"). Never used for anything longer than 1–2 words.
-- **Caption** (400, 11.5–12px): metadata — branch name, repo meta, trial counter, timestamps.
-
-### Named Rules
-
-**The Label, Not Divider Rule.** Sections are separated by an uppercase tracked label plus whitespace, not by a rule/divider line. A visible divider is only introduced where content itself needs a hard boundary (e.g. between a card's rows).
-
-### Landing page type scale
-
-The ramp above belongs to the app, an Operate surface where nothing needs to be larger than a screen title. The landing page is a Persuade surface and needs a display scale the app has no use for. This section documents that scale rather than letting marketing sizes drift as one-offs.
+The app's ramp stops at 18px because nothing in a tool needs to be larger than a screen title. This is a Persuade surface and needs a display scale the app has no use for.
 
 The typeface also differs on purpose: the app uses the OS system stack, the site uses Geist, self-hosted. That is the "custom display face worth revisiting once the brand has marketing surfaces" noted above, and this is that surface.
 
@@ -182,72 +182,72 @@ Tracking tightens as size grows and never passes -0.04em. The wordmark sits at 1
 
 **The One Accent Rule still holds.** The contribution grid's intensity ramp is not an exception to it: contribution graphs have intensity by nature, and that ramp stays confined to grid cells. It is never borrowed for buttons, borders, or text.
 
-## Layout
+## Layout [site]
 
-Two-pane shell: a fixed 236px sidebar (repository list or settings nav) and a flexible main panel (34px/40px padding) holding the active screen's content. This shell is reused across every screen — the Settings screen swaps the sidebar's content (repo list → settings nav) rather than introducing a different shell.
+A scrolling document, not a shell. Content sits in a 1080px measure centred with 24px gutters, which keeps body copy inside a comfortable 65 to 75 character line at the sizes above.
 
-Vertical rhythm inside the main panel groups related fields tightly (label sits 9px above its field) and separates unrelated groups generously (22–26px between field groups, matching the spacing scale's `lg` step). Modals and overlays center within the app window rather than the full screen, at a fixed 380px width.
+The header is sticky and 64px tall. At rest it is transparent and part of the page; once anything has scrolled behind it, it gains a 1px bottom border and a backdrop blur. That transition is the only place blur is used, and it is a specific effect rather than decoration.
 
-## Elevation & Depth
+Vertical rhythm runs on the shared spacing scale. Sections separate by 80 to 112px, more above a heading than below it, so a heading belongs to what follows it rather than floating between two blocks.
 
-Flat by design — no drop shadows on in-flow surfaces. Depth is conveyed entirely through the three-step background stepping (page → sidebar → panel) and 1px borders, not shadow. The one exception is the outer app-window frame itself against its OS chrome, which carries a soft ambient shadow to read as a floating window.
+Home is a showcase: every section is a summary that anchors through to the page holding the detail. Nothing is stated in full twice.
+
+## Elevation & Depth [shared]
+
+Flat by design, with no drop shadows on in-flow surfaces. Depth is conveyed entirely through the three-step background stepping (page → sidebar → panel) and 1px borders, not shadow. The one exception is the outer app-window frame itself against its OS chrome, which carries a soft ambient shadow to read as a floating window.
 
 ### Named Rules
 
 **The Flat Surface Rule.** No card, input, or panel casts a shadow at rest. If a future interaction needs to signal "this is above everything else" (a toast, a dropdown menu), that's the only place a shadow is earned.
 
-## Shapes
+## Shapes [shared]
 
-Controls (buttons, inputs, toggles) use 8–10px radii — soft enough to feel considered, tight enough to stay serious. Cards and modals step up to 12–14px. Full pills (`20px`+ / fully rounded) are reserved for status chips (branch name, trial state, plan badge) — anything that reads as a small tag rather than a container. Borders are always 1px, full 4-sided; no single-sided accent borders.
+Controls (buttons, inputs, toggles) use 8 to 10px radii, soft enough to feel considered and tight enough to stay serious. Cards and modals step up to 12–14px. Full pills (`20px`+ / fully rounded) are reserved for status chips (branch name, trial state, plan badge), anything that reads as a small tag rather than a container. Borders are always 1px, full 4-sided; no single-sided accent borders.
 
-## Components
+## Components [site]
 
 ### Buttons
 
 - **Shape:** 10px radius (`{rounded.field}`).
-- **Primary:** solid accent fill (`#35D08C`) with near-black text (`#06170F`) — the only filled-accent surface in the system. One primary button per screen (Commit, Activate, Save & continue).
-- **Ghost:** transparent background, 1px border (`#23261F`), secondary text color — used for secondary actions (Deactivate) that shouldn't compete with the primary action.
+- **Primary:** solid accent fill with `accent-ink` text, the only filled-accent surface. One per view.
+- **Secondary:** transparent with a 1px `edge` border and secondary text, brightening its border and text on hover.
 
-### Toggles
+### Navigation
 
-- **Style:** 34×20px track, 16px knob. Off state: dark track (`#181C17`) with a light knob. On state: dim-emerald track (`#1E5C41`) with a full-emerald knob (`#35D08C`).
-- **Placement:** sits immediately to the right of its label with a tight 9–10px gap, as a single inline unit — not spread to the far edge of its container. (Corrected during design review: an early draft placed the toggle at the row's far right via `justify-content: space-between`, which read as disconnected from its label and was mistaken for a missing checkbox.)
+- **Active indicator:** a single element that slides between items rather than each item lighting on its own. Implemented as a CSS transition, not a keyframe animation, because transitions interpolate from the element's current position and therefore redirect mid-flight instead of restarting.
+- **Rest position:** the active route. On mouse leave the indicator returns there; with no active route in the row it fades out rather than parking arbitrarily.
+- **Brand mark:** sweeps once on hover. A sign the thing is alive, without a permanently spinning logo in the corner.
 
-### Cards / Panels
+### Cards and figures
 
-- **Corner style:** 12px.
-- **Background:** panel black (`#12140F`), 1px border (`#23261F`).
-- **Shadow strategy:** none — see Elevation & Depth.
-- **Internal padding:** 20–26px depending on content density (settings cards use 20/22px, modals use 26px).
+- **Corner style:** 12px, panel background, 1px `edge` border, no shadow.
+- **Padding:** 24px, rising to 40px for the hero figure.
+- **Never nested.** A card inside a card is always the wrong answer.
 
-### Inputs / Fields
+### The contribution grid
 
-- **Style:** input black background (`#171A18` for the commit message textarea, `#171A18`/`#12140F` for other fields), 1px border (`#23261F`), 10px radius.
-- **Labels:** always the uppercase micro-label pattern, never inline placeholder-only fields.
-- **Read state (date/time pickers):** rendered as a bordered field with a trailing chevron rather than a native `<select>` look — signals "tap to open a picker" without a dropdown arrow feeling like a raw HTML control.
+The site's one signature element. Cells are 11px with a 3px radius on a 15px pitch, using the intensity ramp described in the foundations. It appears in the hero filling its own gaps, and later as the sticky scrolling grid that forms patterns.
 
-### Chips / Badges
+Its ramp is confined to the grid and is never borrowed by another component.
 
-- **Style:** panel-black or transparent background, 1px border, full pill radius, 11.5px text.
-- **Use:** branch name, license plan status, trial counter — anything that's a small piece of state rather than an action.
+### Loaders
 
-### Navigation (sidebar)
+- **Circular:** the brand mark, animated, for route changes. Same component as the app's splash.
+- **Linear:** contribution blocks lighting right to left for inline waits. The reversed direction restates the product at the smallest scale.
 
-- **Repo list rows:** 8px radius, active row gets panel-black background (`#151815`); inactive rows are transparent with dimmer text.
-- **Section labels:** uppercase micro-label pattern, 8px bottom margin before the list/content it introduces.
-
-## Do's and Don'ts
+## Do's and Don'ts [site]
 
 ### Do:
 
-- **Do** keep the accent to a single saturation and hue across the entire app — no accent variants for secondary meanings.
-- **Do** place toggle controls immediately adjacent to their label, not spread to a container's far edge.
-- **Do** use the uppercase micro-label pattern for every section header and field label — it's the system's primary structuring device in the absence of dividers.
-- **Do** keep every screen to one primary (filled) button; secondary actions are always ghost-style.
+- **Do** keep the accent to a single saturation, per the foundations. The contribution grid's ramp is the only intensity scale and it stays inside the grid.
+- **Do** let home summarise and link. The moment a section starts explaining rather than showing, it belongs on its own page.
+- **Do** keep body copy inside a 65 to 75 character measure.
+- **Do** give every interactive element a visible keyboard focus ring. This surface is public, and the app's assumptions about its audience do not carry over.
 
 ### Don't:
 
-- **Don't** ship light mode in V1 — dark-first is a firm product constraint, not a placeholder default. (A light palette was explored and is recorded as a reference for future work: accent shifts to `#149A5D` for contrast on light surfaces, neutrals step through warm off-whites `#FAFAF7` / `#F2F3EE` rather than pure white/gray — see the Riggit project brief's Future Features section. Do not re-derive this from scratch when the time comes.)
-- **Don't** introduce drop shadows on in-flow surfaces — depth comes from background stepping only.
-- **Don't** use single-sided accent borders (`border-left` callouts) — borders are always 1px, 4-sided, or omitted.
-- **Don't** reveal the underlying Git mechanism in any UI copy — this is a content rule as much as a visual one, and it's load-bearing for the product's positioning.
+- **Don't** ship light mode. Dark-first is a product constraint, not a default, and the site has to match the app it is selling. (A light palette was explored and recorded in the brief's Future Features for whenever that changes; do not re-derive it.)
+- **Don't** add drop shadows to in-flow surfaces. Depth is background stepping and 1px borders.
+- **Don't** use gradient text, single-sided accent borders, or blur as decoration. The header's scrolled backdrop is the one sanctioned blur, and it is a specific effect.
+- **Don't** put an uppercase tracked eyebrow above every section. One named kicker is a system; an eyebrow everywhere is grammar nobody chose.
+- **Don't** reveal the underlying Git mechanism in any copy. This is load-bearing for positioning and matters more here than in the app, because this is the page that does the selling.
