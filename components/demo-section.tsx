@@ -1,57 +1,40 @@
-import { BEATS, GRID } from "@/lib/patterns";
+"use client";
 
-const CELL = 11;
-const PITCH = 15;
+import { useRef } from "react";
+import { BEATS, GRID } from "@/lib/patterns";
+import { slotFor, useStep } from "@/lib/use-step";
+
+const CELL = 26;
+const PITCH = 34;
 const SIZE = GRID * PITCH - (PITCH - CELL);
 
-const FILL = [
-  "var(--color-panel)",
-  "var(--color-accent-dim)",
-  "#1e5c41",
-  "#2aa06c",
-  "var(--color-accent)",
-];
+/** Resting dimness of the base grid, varied so it reads as a real
+ * contribution field rather than a blank lattice. */
+const REST = ["#12170f", "#16241a", "#173324"];
 
-/**
- * Beat i holds the centre at `i * STEP`, so clean states land evenly, the
- * first at the very start of the pinned range and the last at its very end.
- *
- * Each window spans two steps either side, not one. That width is what puts
- * three items on screen at once: when i is centred, i-1 has reached its
- * dimmed slot above and i+1 its dimmed slot below. A narrower window has them
- * at their extremes, invisible, exactly when they should be flanking.
- *
- * The outer windows deliberately fall outside 0 to 100, which is what makes
- * the first beat already centred on arrival and the last still centred on
- * exit rather than the stage being blank at both ends.
- */
-const STEP = 100 / (BEATS.length - 1);
-
-function windowFor(index: number) {
-  return {
-    ["--from" as string]: `${((index - 2) * STEP).toFixed(3)}%`,
-    ["--to" as string]: `${((index + 2) * STEP).toFixed(3)}%`,
-  };
+function restFill(i: number): string {
+  const n = Math.sin(i * 19.13 + 7.7) * 9371.3;
+  return REST[Math.floor((n - Math.floor(n)) * REST.length)];
 }
 
 /**
- * The demo: copy steps through fixed positions on one side while the
- * contribution grid holds the other and rearranges into patterns.
+ * The demo: copy holds fixed positions on one side while the contribution
+ * grid lights patterns on the other.
  *
- * The copy does not scroll freely. Three slots exist at any moment, above,
- * centre and below, and items hold still in them for most of the scroll then
- * move quickly between. That is why it reads as a mechanism advancing rather
- * than as text drifting past.
+ * The section is only ever in one of its defined states. Scroll picks the
+ * state; CSS transitions move between them on their own timing. Scroll-driven
+ * animation was tried first and is the wrong tool here by construction: it
+ * maps scroll straight onto progress, so pausing mid-scroll strands everything
+ * mid-transition.
  *
- * The centre slot sits on the same horizontal line as the middle of the grid,
- * because both are centred in a row exactly one viewport tall minus the
- * header.
- *
- * Driven entirely by CSS scroll-driven animation: `animation-range` gives each
- * element its own window on a shared timeline. There are no scroll listeners
- * and no smooth-scroll library.
+ * The base grid is drawn once and never hidden. Each pattern paints only its
+ * lit cells over the top, so the field stays visible underneath instead of
+ * being replaced by a shape on a blank background.
  */
 export function DemoSection() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const step = useStep(trackRef, BEATS.length);
+
   return (
     <section
       aria-labelledby="demo-heading"
@@ -61,18 +44,14 @@ export function DemoSection() {
         How Riggit works
       </h2>
 
-      {/* Tall enough to give every beat room to hold. The sticky row inside
-          stays put while this scrolls past. */}
-      <div className="riggit-demo-track">
+      <div ref={trackRef} className="riggit-demo-track">
         <div className="riggit-demo-stage flex flex-col-reverse items-center gap-10 lg:flex-row lg:gap-20">
-          {/* Copy. Slots are absolute so items can occupy the same three
-              positions rather than stacking in flow. */}
           <ol className="riggit-demo-slots relative w-full lg:w-[46%]">
             {BEATS.map((beat, index) => (
               <li
                 key={beat.key}
+                data-slot={slotFor(index, step)}
                 className="riggit-demo-beat absolute inset-x-0 top-1/2"
-                style={windowFor(index)}
               >
                 <span className="font-mono text-[11.5px] text-ink-muted">
                   {String(index + 1).padStart(2, "0")}
@@ -93,25 +72,41 @@ export function DemoSection() {
                 viewBox={`0 0 ${SIZE} ${SIZE}`}
                 className="w-full"
                 role="img"
-                aria-label="A contribution grid forming an arrow, then a clock, then a filled year"
+                aria-label="A contribution grid lighting up to form an arrow, then a clock"
               >
+                {/* Drawn once and never covered. */}
+                {Array.from({ length: GRID * GRID }, (_, i) => (
+                  <rect
+                    key={i}
+                    x={(i % GRID) * PITCH}
+                    y={Math.floor(i / GRID) * PITCH}
+                    width={CELL}
+                    height={CELL}
+                    rx={7}
+                    fill={restFill(i)}
+                  />
+                ))}
+
                 {BEATS.map((beat, index) => (
                   <g
                     key={beat.key}
+                    data-active={index === step}
                     className="riggit-demo-layer"
-                    style={windowFor(index)}
                   >
-                    {beat.cells.map((level, i) => (
-                      <rect
-                        key={i}
-                        x={(i % GRID) * PITCH}
-                        y={Math.floor(i / GRID) * PITCH}
-                        width={CELL}
-                        height={CELL}
-                        rx={3}
-                        fill={FILL[level]}
-                      />
-                    ))}
+                    {beat.cells.map((level, i) =>
+                      level === 0 ? null : (
+                        <rect
+                          key={i}
+                          x={(i % GRID) * PITCH}
+                          y={Math.floor(i / GRID) * PITCH}
+                          width={CELL}
+                          height={CELL}
+                          rx={7}
+                          fill="var(--color-accent)"
+                          opacity={0.45 + level * 0.14}
+                        />
+                      ),
+                    )}
                   </g>
                 ))}
               </svg>

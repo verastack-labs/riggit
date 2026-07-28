@@ -1,14 +1,17 @@
-export const GRID = 13;
+export const GRID = 9;
 
 /**
- * Pixel patterns the contribution grid forms as you scroll past it.
+ * Patterns the contribution grid forms as you scroll past it.
  *
  * Drawn as text so they can be read and edited as pictures rather than as
- * coordinate arrays. `#` is a lit cell, `.` is empty.
+ * coordinate arrays. `#` is a lit cell, `.` is left at the grid's resting
+ * dimness.
  *
- * Each is 13 by 13. That is the smallest grid that still renders a clock face
- * legibly, and small enough that every cell stays large enough to read as a
- * contribution square rather than a pixel.
+ * Nine by nine, deliberately coarse. The mark itself is eight cells around a
+ * dial, and these should read as the same vocabulary: chunky blocks
+ * suggesting a shape, not pixel art rendering one. A finer grid makes the
+ * cells stop looking like contribution squares, which is the one thing they
+ * have to keep looking like.
  */
 function bitmap(rows: string[]): number[] {
   if (rows.length !== GRID) {
@@ -52,35 +55,27 @@ function dense(): number[] {
 }
 
 const ARROW = bitmap([
-  ".............",
-  ".............",
-  ".....#.......",
-  "....##.......",
-  "...###.......",
-  "..####.......",
-  ".############",
-  "..####.......",
-  "...###.......",
-  "....##.......",
-  ".....#.......",
-  ".............",
-  ".............",
+  ".........",
+  ".........",
+  "...#.....",
+  "..##.....",
+  ".########",
+  "..##.....",
+  "...#.....",
+  ".........",
+  ".........",
 ]);
 
 const CLOCK = bitmap([
-  "....#####....",
-  "..##.....##..",
-  ".#.........#.",
-  "#.....#.....#",
-  "#.....#.....#",
-  "#.....#.....#",
-  "#.....#####.#",
-  "#...........#",
-  "#...........#",
-  ".#.........#.",
-  "..##.....##..",
-  "....#####....",
-  ".............",
+  "..#####..",
+  ".#.....#.",
+  "#...#...#",
+  "#...#...#",
+  "#...####.",
+  "#.......#",
+  "#.......#",
+  ".#.....#.",
+  "..#####..",
 ]);
 
 /**
