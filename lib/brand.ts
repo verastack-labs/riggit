@@ -19,6 +19,19 @@ export const brand = {
   /** Not live until Phase 10 cuts a release. */
   downloadUrl: "https://github.com/verastack-labs/riggit/releases/latest",
   /**
+   * The early access checkout, hosted by Polar.
+   *
+   * The tier's price and its cap live on the link rather than here: a preset
+   * discount capped at 300 redemptions, which is what closes the offer. That
+   * means switching to the next tier is a matter of pointing this at a
+   * different link, with no code change to the price shown beside it.
+   *
+   * Which also means the two can drift. If the figures on the pricing page
+   * ever stop matching what checkout charges, this is the pair to look at.
+   */
+  checkoutUrl:
+    "https://buy.polar.sh/polar_cl_loJgbxMDn2ZLXiCgY1HyEJ7zTLefVLoiAsnv93oTplE",
+  /**
    * Placeholder until the agency domain exists, then swapped for the real
    * address. `.invalid` is reserved by RFC 2606 and can never resolve, so a
    * forgotten placeholder cannot quietly deliver mail to whoever has
