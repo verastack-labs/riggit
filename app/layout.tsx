@@ -15,7 +15,21 @@ import "./globals.css";
  * Geist is self-hosted through its package rather than fetched at build time,
  * so there is no network dependency in CI and no layout shift on load.
  */
+/**
+ * Where relative metadata URLs resolve from.
+ *
+ * Without this the Open Graph image is emitted as a relative path, and every
+ * scraper that matters fetches metadata without a page context, so a relative
+ * path is one it cannot resolve. The symptom is a link preview that silently
+ * shows no image, which is indistinguishable from not having set one.
+ *
+ * Origin only. The file conventions already prefix `basePath`, so including it
+ * here as well produces `/riggit/riggit/opengraph-image.png`.
+ */
+const SITE_ORIGIN = "https://verastack-labs.github.io";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_ORIGIN),
   title: {
     default: `${brand.productName} - ${brand.tagline}`,
     template: `%s - ${brand.productName}`,
@@ -26,6 +40,14 @@ export const metadata: Metadata = {
     title: `${brand.productName} - ${brand.tagline}`,
     description: "Commit to Git at any date and time.",
     type: "website",
+    siteName: brand.productName,
+  },
+  twitter: {
+    // Without this the card renders as a thumbnail beside the text rather than
+    // as the banner the image was drawn to be.
+    card: "summary_large_image",
+    title: `${brand.productName} - ${brand.tagline}`,
+    description: "Commit to Git at any date and time.",
   },
 };
 
