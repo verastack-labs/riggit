@@ -148,7 +148,7 @@ export function SiteHeader() {
         // Border and backdrop appear only once content is behind the header.
         // At rest it is part of the page, not a bar sitting on top.
         scrolled || menuMounted
-          ? "riggit-header-veil border-b border-edge"
+          ? "riggit-header-veil border-b border-edge backdrop-blur-xl backdrop-saturate-150"
           : "border-b border-transparent",
         // The seam below replaces it while the sheet is open, so a flat rule
         // and a gradient are never stacked on the same pixel row.
@@ -294,7 +294,7 @@ export function SiteHeader() {
             // which is what left every item stacked at the top.
             "fixed inset-x-0 bottom-0 z-40 sm:hidden",
             "top-[var(--header-h)] flex flex-col items-center justify-center gap-2 px-6",
-            "riggit-sheet",
+            "riggit-sheet backdrop-blur-[30px] backdrop-saturate-150",
             menu === "open" ? "riggit-sheet-in" : "riggit-sheet-out",
           )}
         >
