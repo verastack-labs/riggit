@@ -32,20 +32,14 @@ export const brand = {
   checkoutUrl:
     "https://buy.polar.sh/polar_cl_loJgbxMDn2ZLXiCgY1HyEJ7zTLefVLoiAsnv93oTplE",
   /**
-   * Placeholder until the agency domain exists, then swapped for the real
-   * address. `.invalid` is reserved by RFC 2606 and can never resolve, so a
-   * forgotten placeholder cannot quietly deliver mail to whoever has
-   * registered the domain it looks like.
+   * Real and monitored. Swap it for an address on the agency domain when that
+   * exists; nothing else needs to change, since every page reads it from here.
    *
    * Not an environment variable. This is a static export, so `NEXT_PUBLIC_`
    * values are inlined into the bundle at build time and would be just as
-   * visible on the deployed site. The only thing a variable buys is keeping
-   * the address out of this public repository, which stops mattering the
-   * moment it is an agency address rather than a personal one.
-   *
-   * It deliberately does not fail the build. Nothing renders it as text while
-   * it is a placeholder, so a live page would show a contact button that goes
-   * nowhere rather than a visibly broken address.
+   * visible on the deployed site. The only thing a variable would buy is
+   * keeping the address out of this public repository, and this one is a
+   * business address rather than anything personal.
    */
-  contactEmail: "enterprise@example.invalid",
+  contactEmail: "verastack.labs@gmail.com",
 } as const;
