@@ -159,7 +159,7 @@ export default function Pricing() {
             </div>
 
             <Price
-              amount="2.99"
+              amount="3.49"
               note="Where the rate goes once the first 300 are taken."
             />
 
