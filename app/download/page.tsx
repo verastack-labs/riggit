@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { HeroWash } from "@/components/hero-wash";
+import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "Download",
@@ -9,35 +10,51 @@ export const metadata: Metadata = {
     "Riggit for macOS, Windows and Linux, with the install notes each platform needs. Three commits free, no account.",
 };
 
-/**
- * Whether builds exist to link to.
- *
- * A single flag rather than per platform, because the release pipeline cuts
- * all three from one tag: there is no state where macOS is published and
- * Windows is not, so three flags could only ever disagree by accident.
- *
- * When the first release lands this becomes true and the buttons link to
- * `brand.downloadUrl`. Until then they are inert, which is deliberate: a
- * button pointing at a releases page with nothing on it is worse than one that
- * says so plainly.
- */
-const RELEASED = false;
+const V = brand.latestVersion;
 
+/**
+ * Pinned to the exact tag rather than to `latest`.
+ *
+ * Asset filenames carry the version, so a `latest/download/Riggit_0.1.0_...`
+ * link keeps working right up until the next release renames the file, and
+ * then breaks for everybody at once. Pinning means the page and the binary it
+ * describes always agree.
+ */
+const asset = (file: string) =>
+  `https://github.com/verastack-labs/riggit/releases/download/v${V}/${file}`;
+
+/**
+ * One primary download per platform, with the rest as plain links beneath.
+ *
+ * Three equally weighted buttons on Linux would make somebody choose a
+ * packaging format before they have decided they want the app. The common
+ * answer is offered, and the other two stay one click away for people who know
+ * they want them.
+ */
 const PLATFORMS = [
   {
     name: "macOS",
     detail: "Apple silicon and Intel, 11 Big Sur or later",
-    file: ".dmg",
+    primary: { label: "Download for macOS", file: `Riggit_${V}_universal.dmg` },
+    alternates: [],
   },
   {
     name: "Windows",
     detail: "64 bit, Windows 10 or later",
-    file: ".exe installer",
+    primary: {
+      label: "Download for Windows",
+      file: `Riggit_${V}_x64-setup.exe`,
+    },
+    alternates: [{ label: "MSI installer", file: `Riggit_${V}_x64_en-US.msi` }],
   },
   {
     name: "Linux",
     detail: "64 bit, WebKitGTK required",
-    file: ".AppImage and .deb",
+    primary: { label: "Download .deb", file: `Riggit_${V}_amd64.deb` },
+    alternates: [
+      { label: "RPM package", file: `Riggit-${V}-1.x86_64.rpm` },
+      { label: "AppImage, portable", file: `Riggit_${V}_amd64.AppImage` },
+    ],
   },
 ];
 
@@ -79,19 +96,6 @@ export default function Download() {
           Builds
         </h2>
 
-        {!RELEASED ? (
-          /* Said once, at the top, rather than repeated on three cards. The
-             cards below still show what is coming, because knowing your
-             platform is covered is the thing most people came to check. */
-          <p className="mb-6 rounded-card border border-edge bg-panel px-6 py-5 text-[15px] leading-[1.6] text-ink-secondary text-pretty">
-            <strong className="font-medium text-ink">
-              Not published yet.
-            </strong>{" "}
-            The first release is being cut. These are the builds it will
-            include, and this page is where they will appear.
-          </p>
-        ) : null}
-
         <div className="grid gap-4 sm:grid-cols-3">
           {PLATFORMS.map((platform) => (
             <div
@@ -104,19 +108,42 @@ export default function Download() {
               <p className="mt-2 text-[14px] leading-[1.5] text-ink-secondary">
                 {platform.detail}
               </p>
-              <p className="mt-1 font-mono text-[12px] text-ink-muted">
-                {platform.file}
-              </p>
 
-              {/* Plain text, not a disabled button. A greyed control still
-                  invites a click and then has to explain itself; a sentence
-                  does the explaining first. */}
-              <p className="mt-6 rounded-field border border-edge px-4 py-2.5 text-center text-[13px] text-ink-muted">
-                Coming with the first release
-              </p>
+              <a
+                href={asset(platform.primary.file)}
+                className="mt-6 block rounded-field bg-accent px-4 py-2.5 text-center text-[13.5px] font-medium text-accent-ink transition-colors duration-150 hover:bg-accent-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              >
+                {platform.primary.label}
+              </a>
+
+              {platform.alternates.length > 0 ? (
+                <ul className="mt-3 flex flex-col gap-1.5">
+                  {platform.alternates.map((alternate) => (
+                    <li key={alternate.file}>
+                      <a
+                        href={asset(alternate.file)}
+                        className="text-[13px] text-ink-secondary underline decoration-edge-strong underline-offset-4 transition-colors duration-150 hover:text-ink hover:decoration-accent-bright"
+                      >
+                        {alternate.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </div>
           ))}
         </div>
+
+        <p className="mt-6 text-[13.5px] text-ink-secondary">
+          Version {V}.{" "}
+          <a
+            href={brand.downloadUrl}
+            className="text-accent-bright underline decoration-accent-track underline-offset-4 transition-colors duration-150 hover:decoration-accent-bright"
+          >
+            Release notes and checksums
+          </a>
+          .
+        </p>
       </section>
 
       <section
