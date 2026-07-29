@@ -307,8 +307,6 @@
      * and the effect was invisible. The heavier blur keeps text legible at
      * the lower opacity. */
     background-color: color-mix(in srgb, var(--color-page) 58%, transparent);
-    backdrop-filter: blur(30px) saturate(150%);
-    -webkit-backdrop-filter: blur(30px) saturate(150%);
   }
 }
 
@@ -691,8 +689,6 @@
 @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
   .riggit-header-veil {
     background-color: color-mix(in srgb, var(--color-page) 52%, transparent);
-    backdrop-filter: blur(24px) saturate(150%);
-    -webkit-backdrop-filter: blur(24px) saturate(150%);
   }
 }
 
