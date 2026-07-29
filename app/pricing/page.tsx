@@ -190,10 +190,10 @@ export default function Pricing() {
               </p>
             </div>
 
-            {/* The address is not shown as text. It is a reserved placeholder
-                until the agency domain exists, and a visible
-                name@example.invalid reads as a broken page in a way a button
-                does not. */}
+            {/* Shown as text below the button now that it is a real address.
+                An institutional buyer often needs to paste it into a
+                procurement form or forward it to someone else, and a mailto
+                link is no use for either. */}
             <a
               href={`mailto:${brand.contactEmail}?subject=${encodeURIComponent(
                 `${brand.productName} for teams`,
@@ -206,6 +206,10 @@ export default function Pricing() {
             >
               Email us
             </a>
+
+            <p className="mt-3 text-center font-mono text-[12.5px] break-all text-ink-muted">
+              {brand.contactEmail}
+            </p>
 
             <Included />
           </div>
