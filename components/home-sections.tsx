@@ -106,12 +106,12 @@ export function PricingTeaser() {
               className="text-[clamp(1.75rem,4vw,2.6rem)] leading-[1.05] font-medium tracking-[-0.03em] text-balance text-ink"
             >
               Starts at{" "}
-              <span className="text-accent-bright">&#36;1.99</span> a month.
+              <span className="text-accent-bright">&#36;2.49</span> a month.
             </h2>
             <p className="mt-5 text-[15.5px] leading-[1.6] text-ink-secondary">
-              The price you join at is the price you keep, permanently. The
-              first 300 subscribers pay less than everyone who comes after, and
-              they go on paying less.
+              Taxes included. The price you join at is the price you keep,
+              permanently. The first 300 subscribers pay less than everyone who
+              comes after, and they go on paying less.
             </p>
           </div>
 

@@ -67,6 +67,11 @@ function Price({ amount, note }: { amount: string; note: string }) {
         </span>
         <span className="text-[13.5px] text-ink-secondary">a month</span>
       </div>
+      {/* Stated on the price rather than in small print at the bottom. Polar
+          presents these as tax-inclusive, so the figure here is what actually
+          leaves someone's card. Saying so beside the number is the difference
+          between a price and a price plus an unknown. */}
+      <p className="mt-1.5 text-[12.5px] text-ink-muted">Taxes included</p>
       <p className="mt-2.5 text-[13px] text-ink-muted">{note}</p>
     </div>
   );
@@ -125,7 +130,7 @@ export default function Pricing() {
                 </span>
               </div>
 
-              <Price amount="1.99" note="Available now, while places last." />
+              <Price amount="2.49" note="Available now, while places last." />
 
               {/* Straight to checkout, not to the download. Somebody on this
                   page has already decided; sending them to a download first
