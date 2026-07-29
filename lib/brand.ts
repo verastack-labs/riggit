@@ -16,8 +16,20 @@ export const brand = {
    * of a component reaching into a string it should not know the shape of.
    */
   taglineAccent: "GitHub",
-  /** Not live until Phase 10 cuts a release. */
   downloadUrl: "https://github.com/verastack-labs/riggit/releases/latest",
+  /**
+   * The version the download page links to, and the one whose filenames it
+   * builds. Bump it here with every release; it is the only place on the site
+   * that carries a version number.
+   *
+   * The links point at the exact tag rather than at `latest`, because asset
+   * filenames carry the version. A `latest/download/Riggit_0.1.0_...` link
+   * would keep resolving right up until the next release renamed the file, and
+   * then 404 for everyone. Pinning means the page and the binary it describes
+   * always agree, and the cost of forgetting to bump is serving an older
+   * version rather than serving nothing.
+   */
+  latestVersion: "0.1.0",
   /**
    * The early access checkout, hosted by Polar.
    *
