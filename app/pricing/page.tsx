@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
-import Link from "next/link";
 import { HeroWash } from "@/components/hero-wash";
 import { brand } from "@/lib/brand";
 import { cn } from "@/lib/cn";
@@ -128,12 +127,17 @@ export default function Pricing() {
 
               <Price amount="1.99" note="Available now, while places last." />
 
-              <Link
-                href="/download"
+              {/* Straight to checkout, not to the download. Somebody on this
+                  page has already decided; sending them to a download first
+                  adds a step before the only action that matters here. The
+                  trial is still one click away on `/download` for anyone who
+                  has not decided. */}
+              <a
+                href={brand.checkoutUrl}
                 className="mt-8 block rounded-field bg-accent px-5 py-3 text-center text-sm font-medium text-accent-ink shadow-[0_0_34px_-10px_var(--color-accent)] transition-colors duration-150 hover:bg-accent-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 Get early access
-              </Link>
+              </a>
 
               <Included />
             </div>
