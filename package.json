@@ -8,6 +8,7 @@
     "build": "cross-env NEXT_DIST_DIR=.next-build next build",
     "start": "next start",
     "icons": "node scripts/generate-icons.mjs",
+    "social": "node scripts/generate-social-image.mjs app",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "build:dev-dir": "next build"
