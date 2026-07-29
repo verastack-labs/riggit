@@ -29,7 +29,7 @@ export const brand = {
    * always agree, and the cost of forgetting to bump is serving an older
    * version rather than serving nothing.
    */
-  latestVersion: "0.1.0",
+  latestVersion: "0.1.1",
   /**
    * The early access checkout, hosted by Polar.
    *
