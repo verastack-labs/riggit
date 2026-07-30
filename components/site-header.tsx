@@ -38,7 +38,6 @@ export function SiteHeader() {
     visible: false,
   });
   const [settled, setSettled] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState<"closed" | "open" | "closing">("closed");
   const menuOpen = menu === "open";
   const menuMounted = menu !== "closed";
@@ -120,13 +119,6 @@ export function SiteHeader() {
   }, [restToActive]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
     if (!menuOpen) return;
 
     const onKey = (event: KeyboardEvent) => {
@@ -142,24 +134,39 @@ export function SiteHeader() {
 
   return (
     <>
-      <header
-      className={cn(
-        "sticky top-0 z-50 transition-colors duration-200",
-        // The glass is permanent. It used to switch on at 8px of scroll, but
-        // `backdrop-filter` cannot be transitioned the way a colour can: it
-        // snapped in whole, and because the veil arrived on the same frame the
-        // effect read as the bar's background sliding up and being replaced.
-        // A surface that is simply always there has no such moment.
-        "riggit-header-veil backdrop-blur-xl backdrop-saturate-150",
-        // The border stays gated, because it means something: content is
-        // passing underneath. It is a colour, so `transition-colors` above
-        // actually interpolates it and it fades rather than pops.
-        scrolled || menuMounted ? "border-b border-edge" : "border-b border-transparent",
-        // The seam below replaces it while the sheet is open, so a flat rule
-        // and a gradient are never stacked on the same pixel row.
-        menuMounted && "border-transparent sm:border-edge",
-      )}
-    >
+      <header className="sticky top-0 z-50">
+      {/* The glass, on a layer of its own and present at every scroll
+        * position. It has no states, which is the point.
+        *
+        * Three arrangements were tried before this one. Toggling
+        * `backdrop-filter` on the header itself snapped, because
+        * `transition-colors` covers the tint and the border but not the
+        * filter, so two halves of one surface arrived on different frames.
+        * Cross-fading this layer's opacity instead read as lag, the header
+        * forever answering a scroll that had already happened. Switching it
+        * with no transition still left a state change to notice.
+        *
+        * A surface that never changes has none of those failure modes, and
+        * nothing left to go wrong mid-scroll. Reintroducing a scroll-gated
+        * state here means reintroducing that search.
+        *
+        * The filter being constant also keeps it off the animation path
+        * entirely; animating `backdrop-filter` is what stutters on a phone,
+        * as `.riggit-sheet` already notes.
+        *
+        * Negative z-index because an absolutely positioned element otherwise
+        * paints above the header's in-flow content. */}
+      <span
+        aria-hidden="true"
+        className={cn(
+          "riggit-header-veil pointer-events-none absolute inset-0 -z-10",
+          "backdrop-blur-xl backdrop-saturate-150 border-b border-edge",
+          // The seam replaces the border while the sheet is open, so a flat
+          // rule and a gradient are never stacked on the same pixel row.
+          menuMounted && "border-transparent sm:border-edge",
+        )}
+      />
+
       <div className="mx-auto flex h-16 max-w-[1080px] items-center gap-8 px-6">
         <Link
           href="/"
