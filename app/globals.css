@@ -674,7 +674,8 @@
   }
 }
 
-/* The header once content is behind it.
+/* The header's surface, painted at every scroll position rather than switched
+ * on once content is behind it. Only the border below it is conditional.
  *
  * Same bargain as the mobile sheet: less opacity, more blur. A bar separates
  * itself from the page better by defocusing what runs under it than by hiding

@@ -145,11 +145,16 @@ export function SiteHeader() {
       <header
       className={cn(
         "sticky top-0 z-50 transition-colors duration-200",
-        // Border and backdrop appear only once content is behind the header.
-        // At rest it is part of the page, not a bar sitting on top.
-        scrolled || menuMounted
-          ? "riggit-header-veil border-b border-edge backdrop-blur-xl backdrop-saturate-150"
-          : "border-b border-transparent",
+        // The glass is permanent. It used to switch on at 8px of scroll, but
+        // `backdrop-filter` cannot be transitioned the way a colour can: it
+        // snapped in whole, and because the veil arrived on the same frame the
+        // effect read as the bar's background sliding up and being replaced.
+        // A surface that is simply always there has no such moment.
+        "riggit-header-veil backdrop-blur-xl backdrop-saturate-150",
+        // The border stays gated, because it means something: content is
+        // passing underneath. It is a colour, so `transition-colors` above
+        // actually interpolates it and it fades rather than pops.
+        scrolled || menuMounted ? "border-b border-edge" : "border-b border-transparent",
         // The seam below replaces it while the sheet is open, so a flat rule
         // and a gradient are never stacked on the same pixel row.
         menuMounted && "border-transparent sm:border-edge",
