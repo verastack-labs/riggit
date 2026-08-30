@@ -222,10 +222,33 @@ export default function Pricing() {
         </p>
       </section>
 
+      <Alternatives />
+
       <BillingNotes />
     </main>
   );
 }
+
+const LABEL =
+  "text-[11.5px] font-medium tracking-[0.09em] text-ink-muted uppercase";
+
+const COMPARISON = [
+  {
+    aspect: "What lands in the repository",
+    fabricated: "Empty commits, generated to fill space.",
+    riggit: "The project you actually built, unchanged.",
+  },
+  {
+    aspect: "What someone finds when they look",
+    fabricated: "Nothing behind the squares.",
+    riggit: "Real work, dated when you wrote it.",
+  },
+  {
+    aspect: "What you can say about it",
+    fabricated: "Very little, comfortably.",
+    riggit: "That the record finally matches what happened.",
+  },
+];
 
 const NOTES = [
   {
@@ -249,6 +272,87 @@ const NOTES = [
     a: "For as long as the subscription runs without a break. If you cancel and come back later, you rejoin at whatever the rate is then.",
   },
 ];
+
+/**
+ * The "why pay" objection, answered before it is asked.
+ *
+ * Anyone who searches finds free tools, so pretending they do not exist reads
+ * as evasion. The comparison is deliberately about what each one produces
+ * rather than how any of them works: a profile that survives being opened is
+ * the actual difference, and it is the same argument that answers the
+ * integrity question an institution will raise.
+ */
+function Alternatives() {
+  return (
+    <section
+      aria-labelledby="alternatives-heading"
+      className="riggit-reveal mx-auto max-w-[1080px] px-6 pt-28 sm:pt-36"
+    >
+      <h2
+        id="alternatives-heading"
+        className="max-w-[20ch] text-[clamp(1.5rem,3vw,2rem)] leading-[1.1] font-medium tracking-[-0.03em] text-ink text-balance"
+      >
+        There are free tools. They do something else.
+      </h2>
+
+      <p className="mt-6 max-w-[62ch] text-[15px] leading-[1.65] text-ink-secondary text-pretty">
+        Some fill a contribution graph with commits that were never made. Some
+        draw pictures on it. Both produce a profile that falls apart the moment
+        someone opens one of the repositories behind it, which is the one moment
+        it needed to hold.
+      </p>
+
+      <p className="mt-4 max-w-[62ch] text-[15px] leading-[1.65] text-ink-secondary text-pretty">
+        Riggit invents nothing. It takes work you already did and puts it on the
+        day you did it.
+      </p>
+
+      <div className="mt-10 flex flex-col">
+        {/* Column labels. Without them the middle column is left to
+            inference, and inferring which side is which is exactly the work
+            a comparison is supposed to remove. They are hidden once the grid
+            collapses, where each cell carries its own label instead. */}
+        <div className="hidden pb-3 sm:grid sm:grid-cols-[19rem_1fr_1fr] sm:gap-12">
+          <span />
+          <span className={LABEL}>Free tools</span>
+          <span className={LABEL}>Riggit</span>
+        </div>
+
+        {COMPARISON.map((row) => (
+          <div
+            key={row.aspect}
+            className="grid gap-4 border-t border-edge py-7 sm:grid-cols-[19rem_1fr_1fr] sm:gap-12"
+          >
+            <p className="text-[15.5px] font-medium text-ink">{row.aspect}</p>
+            <div className="max-w-[40ch]">
+              <span className={cn(LABEL, "mb-1.5 block sm:hidden")}>
+                Free tools
+              </span>
+              <p className="text-[15px] leading-[1.65] text-ink-muted text-pretty">
+                {row.fabricated}
+              </p>
+            </div>
+            <div className="max-w-[40ch]">
+              <span className={cn(LABEL, "mb-1.5 block sm:hidden")}>
+                Riggit
+              </span>
+              <p className="text-[15px] leading-[1.65] text-ink-secondary text-pretty">
+                {row.riggit}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p className="mt-10 max-w-[62ch] text-[14px] leading-[1.6] text-ink-secondary text-pretty">
+        For a college or a training institute there is a second difference. This
+        is an application you install, from a company that can be contacted,
+        rather than a script from a stranger run against a student&apos;s GitHub
+        account.
+      </p>
+    </section>
+  );
+}
 
 function BillingNotes() {
   return (
