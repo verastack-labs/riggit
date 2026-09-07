@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { ContributionGraph } from "@/components/contribution-graph";
@@ -11,6 +12,16 @@ import {
   ProblemSection,
 } from "@/components/home-sections";
 import { brand } from "@/lib/brand";
+import { JsonLd } from "@/components/json-ld";
+import { softwareApplicationSchema } from "@/lib/schema";
+import { canonical } from "@/lib/site";
+
+// Title and description come from the layout defaults, which are written for
+// this page. Only the canonical needs saying, because the layout's is a
+// fallback rather than a claim about any particular page.
+export const metadata: Metadata = {
+  alternates: { canonical: canonical("/") },
+};
 
 /**
  * Home is a showcase. Every section is a summary that anchors through to the
@@ -22,6 +33,10 @@ import { brand } from "@/lib/brand";
 export default function Home() {
   return (
     <main>
+      {/* The product entity itself, on the page most likely to be the one
+          cited. The download page repeats it under the same `@id`, which
+          reads as one product described twice rather than two products. */}
+      <JsonLd data={softwareApplicationSchema()} />
       {/* The opening and its proof share one wrapper so they sit in the same
           pool of light. Split across two bare sections they read as two
           unrelated boxes, and the graph, which is the whole argument, ends up

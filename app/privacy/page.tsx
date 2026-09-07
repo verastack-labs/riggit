@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { DocLayout, DocSection } from "@/components/doc-layout";
 import { brand } from "@/lib/brand";
+import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Privacy",
   description:
     "What Riggit collects, what it does not, and who else is involved. Your repositories and their contents never leave your machine.",
+  alternates: { canonical: canonical("/privacy") },
 };
 
 /**
@@ -29,16 +31,16 @@ export default function Privacy() {
       <DocSection id="what-stays" heading="What never leaves your machine">
         <p>
           Your code. Your commit messages. The names and paths of your
-          repositories. Your branches, remotes, history and diffs. Your Git
-          name and email. None of it is transmitted, uploaded, logged or
-          inspected, and none of it is stored anywhere except on your own disk
-          where Git already keeps it.
+          repositories. Your branches, remotes, history and diffs. Your Git name
+          and email. None of it is transmitted, uploaded, logged or inspected,
+          and none of it is stored anywhere except on your own disk where Git
+          already keeps it.
         </p>
         <p>
-          There is no telemetry, no analytics inside the app, no crash
-          reporting service and no usage tracking. The list of repositories you
-          have added is stored locally so the app can show it again next time,
-          and it goes no further.
+          There is no telemetry, no analytics inside the app, no crash reporting
+          service and no usage tracking. The list of repositories you have added
+          is stored locally so the app can show it again next time, and it goes
+          no further.
         </p>
       </DocSection>
 
