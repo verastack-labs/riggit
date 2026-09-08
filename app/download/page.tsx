@@ -3,11 +3,15 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { HeroWash } from "@/components/hero-wash";
 import { brand } from "@/lib/brand";
+import { JsonLd } from "@/components/json-ld";
+import { softwareApplicationSchema } from "@/lib/schema";
+import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Download",
   description:
     "Riggit for macOS, Windows and Linux, with the install notes each platform needs. Three commits free, no account.",
+  alternates: { canonical: canonical("/download") },
 };
 
 const V = brand.latestVersion;
@@ -61,6 +65,10 @@ const PLATFORMS = [
 export default function Download() {
   return (
     <main>
+      {/* Same `@id` as the home page, so the two blocks describe one product
+          rather than two. This is the page whose `downloadUrl` and version
+          the entity actually points at, which is why it repeats here. */}
+      <JsonLd data={softwareApplicationSchema()} />
       <HeroWash>
         <section className="mx-auto max-w-[1080px] px-6 pt-14 pb-4 sm:pt-20">
           <span
@@ -74,8 +82,8 @@ export default function Download() {
             className="riggit-enter mt-6 max-w-[16ch] text-[clamp(2.4rem,6vw,4rem)] leading-[1] font-medium tracking-[-0.035em] text-balance text-ink"
             style={{ "--enter-delay": "110ms" } as CSSProperties}
           >
-            Three commits{" "}
-            <span className="riggit-gradient-text">free</span>. No account.
+            Three commits <span className="riggit-gradient-text">free</span>. No
+            account.
           </h1>
 
           <p

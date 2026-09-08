@@ -3,6 +3,7 @@ import Link from "next/link";
 import { DocLayout, DocSection, Steps } from "@/components/doc-layout";
 import { OrderReference } from "@/components/order-reference";
 import { brand } from "@/lib/brand";
+import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Welcome",
@@ -11,6 +12,11 @@ export const metadata: Metadata = {
   // sense immediately after a purchase, and indexing it would put a
   // confirmation page in front of people who have not bought anything.
   robots: { index: false, follow: false },
+  // Points at itself, not at home. Inheriting the layout's canonical would
+  // pair `noindex` with a canonical naming a different page, which is a
+  // crawler being told to drop this page and to credit its content to
+  // another one. Self-referential leaves `noindex` as the only instruction.
+  alternates: { canonical: canonical("/welcome") },
 };
 
 /**
@@ -67,8 +73,8 @@ export default function Welcome() {
         </p>
         <p>
           The rate you joined at is yours for as long as the subscription runs
-          without a break. It does not go up underneath you when the early
-          tiers close.
+          without a break. It does not go up underneath you when the early tiers
+          close.
         </p>
       </DocSection>
 

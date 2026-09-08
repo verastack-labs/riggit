@@ -31,6 +31,20 @@ export const brand = {
    */
   latestVersion: "0.1.1",
   /**
+   * The live early access rate, and the currency it is charged in.
+   *
+   * Here rather than in the pricing page because two things now state it: the
+   * page a person reads, and the structured data a search engine reads. Those
+   * disagreeing is worse than either being wrong alone, because the one that
+   * rots is the one nobody looks at.
+   *
+   * The next tier's rate stays on the pricing page. It is a figure being
+   * compared against, not the price of anything currently for sale, so it has
+   * no business in an offer.
+   */
+  earlyAccessPrice: "2.49",
+  currency: "USD",
+  /**
    * The early access checkout, hosted by Polar.
    *
    * The tier's price and its cap live on the link rather than here: a preset

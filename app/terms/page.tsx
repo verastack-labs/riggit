@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { DocLayout, DocSection } from "@/components/doc-layout";
 import { brand } from "@/lib/brand";
+import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms",
   description:
     "The terms covering your use of Riggit: what the licence allows, what it does not, and what happens when a subscription ends.",
+  alternates: { canonical: canonical("/terms") },
 };
 
 /**

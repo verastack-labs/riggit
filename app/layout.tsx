@@ -5,6 +5,9 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { cn } from "@/lib/cn";
 import { brand } from "@/lib/brand";
+import { JsonLd } from "@/components/json-ld";
+import { organizationSchema, websiteSchema } from "@/lib/schema";
+import { canonical, SITE_ORIGIN } from "@/lib/site";
 import "./globals.css";
 
 /**
@@ -15,19 +18,6 @@ import "./globals.css";
  * Geist is self-hosted through its package rather than fetched at build time,
  * so there is no network dependency in CI and no layout shift on load.
  */
-/**
- * Where relative metadata URLs resolve from.
- *
- * Without this the Open Graph image is emitted as a relative path, and every
- * scraper that matters fetches metadata without a page context, so a relative
- * path is one it cannot resolve. The symptom is a link preview that silently
- * shows no image, which is indistinguishable from not having set one.
- *
- * Origin only. The file conventions already prefix `basePath`, so including it
- * here as well produces `/riggit/riggit/opengraph-image.png`.
- */
-const SITE_ORIGIN = "https://verastack-labs.github.io";
-
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
   title: {
@@ -36,11 +26,16 @@ export const metadata: Metadata = {
   },
   description:
     "Commit to Git at any date and time. Backfill the work you actually did, and make your contribution graph tell the truth.",
+  // The default only. Every indexable page sets its own, because a canonical
+  // inherited from the layout would tell a crawler that seven pages are all
+  // the home page.
+  alternates: { canonical: canonical("/") },
   openGraph: {
     title: `${brand.productName} - ${brand.tagline}`,
     description: "Commit to Git at any date and time.",
     type: "website",
     siteName: brand.productName,
+    url: canonical("/"),
   },
   twitter: {
     // Without this the card renders as a thumbnail beside the text rather than
@@ -61,6 +56,11 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="flex min-h-screen flex-col bg-page text-ink antialiased">
+        {/* Site-wide, so they sit here rather than on every page. The
+            per-page blocks reference these by `@id` instead of restating
+            them. */}
+        <JsonLd data={organizationSchema()} />
+        <JsonLd data={websiteSchema()} />
         <SiteHeader />
         <div className="flex-1">{children}</div>
         <SiteFooter />

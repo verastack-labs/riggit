@@ -3,11 +3,15 @@ import type { CSSProperties } from "react";
 import { HeroWash } from "@/components/hero-wash";
 import { brand } from "@/lib/brand";
 import { cn } from "@/lib/cn";
+import { JsonLd } from "@/components/json-ld";
+import { faqPageSchema } from "@/lib/schema";
+import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Pricing",
   description:
     "Riggit is a subscription, one seat per person. Early access is limited and the price rises as it fills, but the price you join at is the price you keep.",
+  alternates: { canonical: canonical("/pricing") },
 };
 
 /** What every tier includes. Listed once, since no tier withholds a feature. */
@@ -130,7 +134,10 @@ export default function Pricing() {
                 </span>
               </div>
 
-              <Price amount="2.49" note="Available now, while places last." />
+              <Price
+                amount={brand.earlyAccessPrice}
+                note="Available now, while places last."
+              />
 
               {/* Straight to checkout, not to the download. Somebody on this
                   page has already decided; sending them to a download first
@@ -360,6 +367,12 @@ function BillingNotes() {
       aria-labelledby="billing-heading"
       className="riggit-reveal mx-auto max-w-[1080px] px-6 pt-28 sm:pt-36"
     >
+      {/* Beside the markup it describes, not in the page head, so that
+          changing one without the other is hard to do by accident. Marking up
+          answers a visitor cannot read is what the spec calls hidden content;
+          these are the same five that render below. */}
+      <JsonLd data={faqPageSchema(NOTES, "/pricing")} />
+
       <h2
         id="billing-heading"
         className="text-[clamp(1.5rem,3vw,2rem)] leading-[1.1] font-medium tracking-[-0.03em] text-ink"

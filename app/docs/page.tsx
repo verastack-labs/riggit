@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { DocLayout, DocSection, Steps } from "@/components/doc-layout";
 import { brand } from "@/lib/brand";
+import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Documentation",
   description:
     "Installing Riggit, making your first commit, how identity is resolved, managing your licence across devices, and what to do when something goes wrong.",
+  alternates: { canonical: canonical("/docs") },
 };
 
 export default function Docs() {
@@ -38,8 +40,8 @@ export default function Docs() {
         </p>
         <p>
           The current builds are not code signed, so both macOS and Windows will
-          question them on first open. The download page walks through each,
-          and it is a one time step per machine.
+          question them on first open. The download page walks through each, and
+          it is a one time step per machine.
         </p>
       </DocSection>
 
