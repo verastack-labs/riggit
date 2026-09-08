@@ -8,11 +8,13 @@ import {
   ProductClosing,
   RequirementsSection,
 } from "@/components/product-sections";
+import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Product",
   description:
     "Riggit is a desktop app for making Git commits at any date and time. What it does, what it deliberately does not do, and what it needs to run.",
+  alternates: { canonical: canonical("/product") },
 };
 
 /**
