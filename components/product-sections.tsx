@@ -72,8 +72,8 @@ const BOUNDARIES = [
     body: "Nothing happens in the background and nothing is scanned. Riggit works on the repositories you have added, one at a time, when you press the button.",
   },
   {
-    title: "It never asks for your GitHub account",
-    body: "No password, no OAuth, no token. Riggit talks to exactly one server, the one that checks your licence, and that server never learns which repositories you have or what is in them.",
+    title: "It never asks for your GitHub password",
+    body: "Signing in is optional and goes through GitHub's own device flow, so Riggit never sees a password. It reads your profile and email addresses, so your commits carry an address GitHub recognises, and asks for nothing else unless a push is refused and you choose to allow it.",
   },
   {
     title: "Your code never leaves your machine",
