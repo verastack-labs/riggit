@@ -14,18 +14,22 @@ export const metadata: Metadata = {
  * A draft, and needs a lawyer's read before the site goes live.
  *
  * It is written from the architecture rather than from a template, which is
- * the only reason it can be this specific: the app talks to one endpoint, the
- * licence check, and the site is a static export with no analytics and no
- * server to log anything. A generic policy would have to hedge all of that
- * into meaninglessness, and hedging is precisely what a tool with write access
- * to someone's Git history cannot afford here.
+ * the only reason it can be this specific: the app talks to the licence check,
+ * to GitHub's release list at launch, and to GitHub's API if the user signs
+ * in, and the site is a static export with no analytics and no server to log
+ * anything. A generic policy would have to hedge all of that into
+ * meaninglessness, and hedging is precisely what a tool with write access to
+ * someone's Git history cannot afford here.
+ *
+ * Every sentence below is a claim about the code. When the code gains a
+ * network call, this page is part of that change, not a follow-up to it.
  */
 export default function Privacy() {
   return (
     <DocLayout
       eyebrow="Legal"
       title="Your repositories never leave your machine."
-      lead="This is the short version and it is also the true version. Riggit is a desktop app that runs locally. It sends a licence key, to check that it is valid, and it talks to GitHub only if you choose to sign in."
+      lead="This is the short version and it is also the true version. Riggit is a desktop app that runs locally. It sends a licence key, to check that it is valid, asks GitHub at startup whether a newer version exists, and goes further with GitHub only if you choose to sign in."
       updated="11 September 2026"
     >
       <DocSection id="what-stays" heading="What never leaves your machine">
@@ -60,6 +64,14 @@ export default function Privacy() {
           If that check cannot be reached, Riggit continues working for seven
           days on the last successful result before asking again. It does not
           queue anything to send later.
+        </p>
+        <p>
+          A version check. Once when the app starts, Riggit asks GitHub which
+          version it has published most recently, so it can tell you when a
+          newer one exists. It is an ordinary public request that anyone could
+          make, it carries nothing about you, your machine or your
+          repositories, and the answer is a version number. If it fails, the
+          app says nothing and carries on.
         </p>
       </DocSection>
 
