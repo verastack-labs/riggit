@@ -146,7 +146,7 @@ const QUESTIONS = [
   },
   {
     q: "Do I have to give it access to my GitHub account?",
-    a: "No. Riggit never asks for your account password and never signs in on your behalf. It talks to one server, the one that checks your licence, and nothing else. Your code never leaves your machine.",
+    a: "No. Riggit works without signing in at all, and never sees your password. Signing in is optional and does one job: it fills in the email address your commits should carry, since commits with an address GitHub does not recognise never appear on your graph. Your code never leaves your machine either way.",
   },
 ];
 
