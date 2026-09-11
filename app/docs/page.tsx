@@ -153,10 +153,11 @@ export default function Docs() {
 
       <DocSection id="privacy" heading="What leaves your machine">
         <p>
-          Your code does not. Riggit talks to two servers at most: the one that
-          checks your licence, and GitHub, and only ever GitHub if you choose to
-          sign in. Neither is told which repositories you have opened or what is
-          in them.
+          Your code does not. Riggit talks to two servers: the one that checks
+          your licence, and GitHub, which it asks at startup whether a newer
+          version has been published, and which it goes further with only if
+          you choose to sign in. Neither is told which repositories you have
+          opened or what is in them.
         </p>
         <p>
           The only other thing that goes anywhere is the push you explicitly
