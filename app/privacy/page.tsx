@@ -25,8 +25,8 @@ export default function Privacy() {
     <DocLayout
       eyebrow="Legal"
       title="Your repositories never leave your machine."
-      lead="This is the short version and it is also the true version. Riggit is a desktop app that runs locally. The only thing it sends anywhere is a licence key, to check that it is valid."
-      updated="29 July 2026"
+      lead="This is the short version and it is also the true version. Riggit is a desktop app that runs locally. It sends a licence key, to check that it is valid, and it talks to GitHub only if you choose to sign in."
+      updated="11 September 2026"
     >
       <DocSection id="what-stays" heading="What never leaves your machine">
         <p>
@@ -46,10 +46,10 @@ export default function Privacy() {
 
       <DocSection id="what-is-sent" heading="What is sent, and where">
         <p>
-          One thing: a licence check. When you activate Riggit, and once at each
-          launch afterwards, it sends your licence key and an identifier for the
-          device to our licensing provider so they can confirm the subscription
-          is active and that the seat is not in use elsewhere.
+          A licence check. When you activate Riggit, and once at each launch
+          afterwards, it sends your licence key and an identifier for the device
+          to our licensing provider so they can confirm the subscription is
+          active and that the seat is not in use elsewhere.
         </p>
         <p>
           The device identifier is derived from your machine and exists only to
@@ -60,6 +60,35 @@ export default function Privacy() {
           If that check cannot be reached, Riggit continues working for seven
           days on the last successful result before asking again. It does not
           queue anything to send later.
+        </p>
+      </DocSection>
+
+      <DocSection id="github" heading="Signing in to GitHub">
+        <p>
+          Optional, and off until you ask for it. Riggit can read your name and
+          the email addresses on your GitHub account, so that your commits carry
+          an address GitHub recognises. Commits carrying an address it does not
+          recognise land in your history and never appear on your graph, which
+          is the problem this solves.
+        </p>
+        <p>
+          It uses GitHub&#39;s device flow, which means you authorise it in your
+          own browser and Riggit never sees your password. The permission it
+          asks for is read-only: your profile and your email addresses. That
+          exchange is between you, your browser and GitHub. It does not pass
+          through us, and we are not told it happened.
+        </p>
+        <p>
+          The token from that sign-in is used once, to read those values, and
+          then discarded. Nothing is stored and there is nothing to revoke.
+        </p>
+        <p>
+          Publishing is the one case that asks for more. If your saved Git
+          credentials are refused, Riggit can ask for permission to push on your
+          behalf, and that permission does cover your repositories. It is only
+          ever offered after a push has already failed, you can decline it, and
+          if you accept it the token is kept in your operating system&#39;s
+          keychain until you remove it from settings.
         </p>
       </DocSection>
 
@@ -115,6 +144,13 @@ export default function Privacy() {
           Nothing on your machine needs our involvement to remove. Uninstalling
           the app removes it, and every commit it made is an ordinary Git commit
           that belongs to your repository.
+        </p>
+        <p>
+          The one thing worth doing by hand: if you granted permission to push,
+          remove it from settings before uninstalling, since a key kept in your
+          operating system&#39;s keychain is not ours to delete. You can also
+          revoke it from GitHub at any time, which works whether or not Riggit
+          is still installed.
         </p>
         <p>
           Write to{" "}
