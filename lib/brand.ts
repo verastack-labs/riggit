@@ -29,7 +29,7 @@ export const brand = {
    * always agree, and the cost of forgetting to bump is serving an older
    * version rather than serving nothing.
    */
-  latestVersion: "0.1.2",
+  latestVersion: "0.1.3",
   /**
    * The live early access rate, and the currency it is charged in.
    *
