@@ -52,7 +52,8 @@ export default function Docs() {
             "Write a message. The same message you would have written at the time.",
             "Choose the date and the time. Both, not just the date. A backfilled week reads as a worked week because the commits land at plausible hours.",
             "Decide about staging. Stage all picks up everything that has changed. Leave it off and Riggit commits exactly what you have already staged yourself.",
-            "Decide about pushing. Off by default. A commit is local until you say otherwise, and you can always push later from your terminal.",
+            "Decide about syncing. Off by default. With it on, Riggit pulls anything new from the remote, makes the commit, then pushes. With it off the commit stays on your machine until you say otherwise.",
+            "Decide about empty commits. Off by default, and only for work that left no diff of its own: a review, a pairing session, an afternoon reading the codebase.",
             "Commit. The repository state above the button refreshes, and the commit is a completely ordinary Git commit from that moment on.",
           ]}
         />
@@ -140,6 +141,23 @@ export default function Docs() {
           says so rather than reporting the whole thing as broken. Your commit
           exists. Push it whenever you are back online, from Riggit or from your
           terminal.
+        </p>
+        <p>
+          <strong className="font-medium text-ink">
+            Your branch and the remote have both moved on.
+          </strong>{" "}
+          Riggit only ever fast-forwards. It will not merge two histories for
+          you, and it will never rebase, so when both sides have commits the
+          other does not, it stops. Your commit is already made and safe. Merge
+          in your terminal, then sync again.
+        </p>
+        <p>
+          <strong className="font-medium text-ink">
+            The remote changed files you had edited.
+          </strong>{" "}
+          There was nothing to fast-forward onto without overwriting your work,
+          so Riggit left it alone. Again, the commit is made. Merge in your
+          terminal when you are ready.
         </p>
         <p>
           <strong className="font-medium text-ink">
