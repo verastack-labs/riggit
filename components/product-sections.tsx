@@ -10,8 +10,8 @@ const CAPABILITIES = [
     body: "Riggit drives the Git on your machine. Your SSH keys, credential helpers, hooks, aliases and remotes all apply, unchanged. If you can push to a repository today, you can use Riggit with it.",
   },
   {
-    title: "Stage and push in the same step",
-    body: "Two toggles beside the commit button. Leave them off and Riggit commits exactly what you have already staged, and leaves the pushing to you.",
+    title: "Stage and sync in the same step",
+    body: "Three toggles beside the commit button, all off by default except staging. Syncing pulls what is new from the remote before committing, then pushes, so a branch that has moved on is not a rejected push and a dead end.",
   },
   {
     title: "Identity, settled once",
@@ -77,7 +77,7 @@ const BOUNDARIES = [
   },
   {
     title: "Your code never leaves your machine",
-    body: "The only thing that goes anywhere is the push you asked for, to the remote you already had, over the connection Git already uses.",
+    body: "The only thing that goes anywhere is the syncing you asked for, to the remote you already had, over the connection Git already uses.",
   },
 ];
 
