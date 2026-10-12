@@ -2,23 +2,22 @@ import type { MetadataRoute } from "next";
 import { canonical, SITE_URL } from "@/lib/site";
 
 /**
- * Not read by any crawler today, and shipped anyway.
+ * Fetched for real, now that there is a host root to fetch it from.
  *
- * `robots.txt` is only ever fetched from the root of a host, per RFC 9309.
- * This site is served from `/riggit` on a host shared with every GitHub user,
- * so what the export writes is `/riggit/robots.txt`, which nothing requests.
- * The root belongs to a `verastack-labs.github.io` repository that does not
- * exist yet.
+ * `robots.txt` is only ever read from the root of a host, per RFC 9309. While
+ * the site lived at `verastack-labs.github.io/riggit` the export wrote
+ * `/riggit/robots.txt`, which nothing ever requested, and the file was
+ * shipped on the bet that a domain would arrive. It has.
  *
- * It is here because the file is the correct one to serve the moment there is
- * a root to serve it from, and because the alternative is rediscovering these
- * rules later. Nothing depends on it in the meantime: `/welcome` is kept out
- * of search by its own `robots` metadata, which is a per-page meta tag and
- * works regardless of this file, and the sitemap has to be submitted to
- * Search Console by hand either way.
+ * `/welcome` is kept out of search here as well as by its own `noindex` meta
+ * tag. Belt and braces, because the two work differently: the meta tag stops
+ * a page that was crawled from being indexed, and this stops it being
+ * crawled. A purchase confirmation in a search result is a page that makes no
+ * sense to whoever lands on it.
  *
- * So do not read the presence of this file as the site being crawlable on
- * purpose. It is crawlable because nothing is stopping it.
+ * The sitemap still has to be submitted to Search Console by hand. Naming it
+ * here means a crawler that arrives on its own can find it, which is not the
+ * same as being discovered in the first place.
  */
 export const dynamic = "force-static";
 
