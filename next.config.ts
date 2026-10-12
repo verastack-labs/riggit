@@ -3,11 +3,14 @@ import type { NextConfig } from "next";
 /**
  * Built as a static export for GitHub Pages.
  *
- * The site is served from a project path, `verastack-labs.github.io/riggit`,
- * not from a domain root, so `basePath` has to be set or every internal link
- * and asset URL resolves one level too high. It is read from an env var so a
- * local `next dev` still runs at `/`, and so pointing a real domain at this
- * later is a config change rather than a find and replace.
+ * The site is served from the root of `riggit.verastack.dev`, so `basePath`
+ * is empty and every internal link resolves where it is written.
+ *
+ * It stays an env var rather than being deleted. It was one so that pointing
+ * a real domain at the site would be a config change rather than a find and
+ * replace, and that turned out to be exactly right: the move cost one line in
+ * the deploy workflow. A second brand served from a project path would need
+ * it back on the same terms.
  *
  * `images.unoptimized` is required: the Next image optimiser needs a server,
  * and a static export has none.
@@ -22,8 +25,8 @@ const nextConfig: NextConfig = {
   // directory makes the two impossible to collide.
   distDir: process.env.NEXT_DIST_DIR ?? ".next",
   basePath,
-  // Without this, GitHub Pages serves /riggit/about as a 404 rather than
-  // finding /riggit/about/index.html.
+  // Without this, GitHub Pages serves /about as a 404 rather than finding
+  // /about/index.html.
   trailingSlash: true,
   images: { unoptimized: true },
 };

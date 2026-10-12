@@ -44,13 +44,12 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm lint
 
+      # No NEXT_PUBLIC_BASE_PATH. The site is served from the root of
+      # riggit.verastack.dev rather than from a project path, so the variable
+      # stays empty and every internal link resolves where it is written.
+      # Setting it again would prefix every asset with a directory that does
+      # not exist.
       - name: Build
-        env:
-          # The site is served from a project path, not a domain root, so every
-          # internal link and asset URL resolves one level too high without
-          # this. It is empty in local development, which is why `next dev`
-          # runs at `/`.
-          NEXT_PUBLIC_BASE_PATH: /riggit
         run: pnpm build
 
       # Stops Pages running the output through Jekyll, which would drop every
