@@ -18,21 +18,33 @@ import "./globals.css";
  * Geist is self-hosted through its package rather than fetched at build time,
  * so there is no network dependency in CI and no layout shift on load.
  */
+/**
+ * One description, used for search results and for every social card.
+ *
+ * It was three copies of the same idea, and two of them drifted down to
+ * "Commit to Git at any date and time." at thirty-five characters, which
+ * LinkedIn rejects as too short to preview. One constant cannot drift.
+ *
+ * No page overrides `openGraph`, so this is what every page on the site hands
+ * a social crawler, not just the home page.
+ */
+const DESCRIPTION =
+  "Commit to Git at any date and time. Backfill the work you actually did, and make your contribution graph tell the truth.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
   title: {
     default: `${brand.productName} - ${brand.tagline}`,
     template: `%s - ${brand.productName}`,
   },
-  description:
-    "Commit to Git at any date and time. Backfill the work you actually did, and make your contribution graph tell the truth.",
+  description: DESCRIPTION,
   // The default only. Every indexable page sets its own, because a canonical
   // inherited from the layout would tell a crawler that seven pages are all
   // the home page.
   alternates: { canonical: canonical("/") },
   openGraph: {
     title: `${brand.productName} - ${brand.tagline}`,
-    description: "Commit to Git at any date and time.",
+    description: DESCRIPTION,
     type: "website",
     siteName: brand.productName,
     url: canonical("/"),
@@ -42,7 +54,7 @@ export const metadata: Metadata = {
     // as the banner the image was drawn to be.
     card: "summary_large_image",
     title: `${brand.productName} - ${brand.tagline}`,
-    description: "Commit to Git at any date and time.",
+    description: DESCRIPTION,
   },
 };
 
