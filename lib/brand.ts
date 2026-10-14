@@ -67,5 +67,5 @@ export const brand = {
    * keeping the address out of this public repository, and this one is a
    * business address rather than anything personal.
    */
-  contactEmail: "verastack.labs@gmail.com",
+  contactEmail: "rigan@verastack.dev",
 } as const;
