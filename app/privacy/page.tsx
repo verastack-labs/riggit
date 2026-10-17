@@ -16,8 +16,8 @@ export const metadata: Metadata = {
  * It is written from the architecture rather than from a template, which is
  * the only reason it can be this specific: the app talks to the licence check,
  * to GitHub's release list at launch, and to GitHub's API if the user signs
- * in, and the site is a static export with no analytics and no server to log
- * anything. A generic policy would have to hedge all of that into
+ * in, and the site is a static export whose only third party script is a
+ * cookieless page-view counter, with no server of our own to log anything. A generic policy would have to hedge all of that into
  * meaninglessness, and hedging is precisely what a tool with write access to
  * someone's Git history cannot afford here.
  *
@@ -30,7 +30,7 @@ export default function Privacy() {
       eyebrow="Legal"
       title="Your repositories never leave your machine."
       lead="This is the short version and it is also the true version. Riggit is a desktop app that runs locally. It sends a licence key, to check that it is valid, asks GitHub at startup whether a newer version exists, and goes further with GitHub only if you choose to sign in."
-      updated="11 September 2026"
+      updated="17 October 2026"
     >
       <DocSection id="what-stays" heading="What never leaves your machine">
         <p>
@@ -132,10 +132,21 @@ export default function Privacy() {
       <DocSection id="website" heading="This website">
         <p>
           These pages are static files served by GitHub Pages. There are no
-          cookies, no analytics, no tracking pixels, no embedded third party
-          scripts and no fonts fetched from anyone else&#39;s server. Nothing
-          here follows you and there is no consent banner because there is
-          nothing to consent to.
+          cookies, no tracking pixels, and no fonts fetched from anyone
+          else&#39;s server.
+        </p>
+        <p>
+          There is one third party script: Cloudflare Web Analytics, which
+          counts page views. It sets no cookies, stores nothing on your
+          device, and builds no profile of you, so there is no identifier
+          following you between visits or between sites. We see how many
+          people opened a page and roughly where in the world they were, and
+          nothing that points at a person.
+        </p>
+        <p>
+          That is also why there is no consent banner. One is required for
+          tracking that identifies you, and this does not do that. If we ever
+          add something that does, the banner arrives with it.
         </p>
         <p>
           GitHub serves the files and, like any web host, records the requests
