@@ -97,6 +97,23 @@ export default function Home() {
             >
               Three commits free. No account needed.
             </p>
+
+            {/* The plain sentence the page was missing.
+             *
+             * Everything above it is written for somebody who already knows
+             * what this is. Nothing said it is a desktop app, which is the
+             * first thing a reader needs in order to decide whether Download
+             * means anything to them, and the first thing a model needs in
+             * order to describe the product to someone else. */}
+            <p
+              className="riggit-enter mt-5 max-w-[52ch] text-[13px] leading-[1.65] text-ink-muted text-pretty"
+              style={{ "--enter-delay": "420ms" } as CSSProperties}
+            >
+              Riggit is a desktop app for macOS, Windows and Linux. It drives
+              the Git already installed on your machine, works on repositories
+              you have already checked out, and only ever creates new commits:
+              it never amends, rebases or rewrites the history you have.
+            </p>
           </div>
         </section>
 
