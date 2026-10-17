@@ -113,8 +113,21 @@ export function SiteHeader() {
     };
   }, [menuMounted]);
 
+  // Width only.
+  //
+  // Mobile browsers fire `resize` every time the address bar hides or shows,
+  // which is on every change of scroll direction. The indicator only ever
+  // moves when the width changes, so reacting to height was work done dozens
+  // of times a minute to arrive back where it started.
   useEffect(() => {
-    const onResize = () => restToActive();
+    let lastWidth = window.innerWidth;
+
+    const onResize = () => {
+      if (window.innerWidth === lastWidth) return;
+      lastWidth = window.innerWidth;
+      restToActive();
+    };
+
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, [restToActive]);
