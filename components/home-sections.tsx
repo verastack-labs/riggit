@@ -135,7 +135,13 @@ export function PricingTeaser() {
   );
 }
 
-const QUESTIONS = [
+/**
+ * Exported so the page can mark the same answers up as FAQPage.
+ *
+ * One array, read twice. A second copy written for the structured data is
+ * how the markup ends up promising answers the page does not actually give.
+ */
+export const QUESTIONS = [
   {
     q: "Is this allowed?",
     a: "Riggit sets the date on commits you make yourself, in repositories you already control. It never alters commits that already exist, never touches anyone else's history, and does nothing to a repository you have not opened in the app.",

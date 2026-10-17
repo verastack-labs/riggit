@@ -10,10 +10,11 @@ import {
   FaqSection,
   PricingTeaser,
   ProblemSection,
+  QUESTIONS,
 } from "@/components/home-sections";
 import { brand } from "@/lib/brand";
 import { JsonLd } from "@/components/json-ld";
-import { softwareApplicationSchema } from "@/lib/schema";
+import { faqPageSchema, softwareApplicationSchema } from "@/lib/schema";
 import { canonical } from "@/lib/site";
 
 // Title and description come from the layout defaults, which are written for
@@ -132,6 +133,11 @@ export default function Home() {
       <ProblemSection />
       <CanvasDemo />
       <PricingTeaser />
+      {/* The same three answers the section above renders, marked up so a
+          machine reading this page gets them as questions rather than having
+          to infer them from the markup. Driven off the one array, so the two
+          cannot say different things. */}
+      <JsonLd data={faqPageSchema(QUESTIONS, "/")} />
       <FaqSection />
       <ClosingSection />
     </main>
