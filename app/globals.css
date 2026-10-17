@@ -430,9 +430,18 @@
  * construction: it maps scroll straight onto progress, which is exactly the
  * "stranded halfway" behaviour being avoided. */
 
+/* `svh` is the small viewport height: the window as it is when the mobile
+ * address bar is showing. It does not move when the bar hides, which `dvh`
+ * does and which is what makes a pinned scene shove everything below it on
+ * every change of scroll direction.
+ *
+ * These tracks are four viewport heights tall, so any unit that moves gets
+ * multiplied by four before it reaches the reader. The `vh` line stays first
+ * as the fallback for browsers that do not know `svh`. */
 .riggit-demo-track,
 .riggit-canvas-track {
   height: calc(var(--demo-beats) * 100vh);
+  height: calc(var(--demo-beats) * 100svh);
 }
 
 .riggit-demo-stage,
@@ -441,7 +450,11 @@
   /* Centred in what is left below the header, so the middle copy slot and the
    * middle of the grid sit on the same horizontal line. */
   top: var(--header-h);
+  /* `svh` again, and here it also fixes a second thing: at `100vh` the stage
+   * is as tall as the window with the bar hidden, so while the bar is showing
+   * the bottom of the pinned scene sits below the fold. */
   height: calc(100vh - var(--header-h));
+  height: calc(100svh - var(--header-h));
 }
 
 .riggit-canvas-stage {
