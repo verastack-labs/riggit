@@ -1,0 +1,24 @@
+# Riggit
+
+> A desktop app for committing to Git at any date and time, so a contribution
+> graph reflects the work that actually happened. Built by Verastack Labs.
+
+Riggit drives the Git already installed on your machine. It only ever creates
+new commits: it does not amend, rebase, squash or force anything. Three
+commits are free and need no account.
+
+## Pages
+
+- [Riggit](https://riggit.verastack.dev/): what the product is and the gaps it fills
+- [Product](https://riggit.verastack.dev/product/): what it does, and the list of things it will not do
+- [Pricing](https://riggit.verastack.dev/pricing/): tiers, and how Riggit differs from scripts that fabricate commits
+- [Download](https://riggit.verastack.dev/download/): builds for macOS, Windows and Linux, with install notes per platform
+- [Documentation](https://riggit.verastack.dev/docs/): installing, a first commit, identity, licensing, troubleshooting
+- [Privacy](https://riggit.verastack.dev/privacy/): what leaves your machine, and what does not
+- [Terms](https://riggit.verastack.dev/terms/): the terms of sale and use
+
+## Notes
+
+- Requires Git already installed. Riggit does not bundle its own copy.
+- Commits are local until you choose to sync. Syncing pulls, commits, then pushes.
+- Signing in to GitHub is optional, and only reads your name and verified email addresses.

@@ -34,6 +34,11 @@ export function organizationSchema() {
       "@type": "ImageObject",
       url: `${SITE_URL}/icon.svg`,
     },
+    // The profiles that let a machine confirm this is one entity rather than
+    // three names that happen to match. Only places the organisation
+    // genuinely controls: a `sameAs` pointing somewhere we do not own is a
+    // claim we cannot back.
+    sameAs: ["https://github.com/verastack-labs", "https://verastack.dev"],
   };
 }
 
